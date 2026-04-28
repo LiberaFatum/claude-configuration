@@ -4,44 +4,19 @@
 
 ## Project Overview
 
-<!-- [TODO] Describe what this project does in 2-3 sentences. -->
-
-## Tech Stack
-
-<!-- [TODO] List your technologies. Example: -->
-<!-- - **Language:** Python 3.12+ / TypeScript 5.x -->
-<!-- - **Framework:** FastAPI / Next.js / etc. -->
-<!-- - **Database:** PostgreSQL / SQLite / none -->
-<!-- - **Testing:** pytest / vitest / jest -->
-<!-- - **Linting:** ruff / eslint -->
-<!-- - **Package manager:** uv / npm / pnpm -->
-
-## Project Structure
-
-<!-- [TODO] Describe your source code layout. Example: -->
-<!--
-```
-src/
-  api/          # Routes and endpoints
-  models/       # Database models and schemas
-  services/     # Business logic
-tests/
-  unit/         # Fast, isolated tests
-  integration/  # Tests that touch the database
-```
--->
+Fill in a 2-3 sentence description of what this project does once you know.
 
 ## Workflow Rules
 
-### Before writing any code
+### Before writing code
 
-1. Use `/plan` to outline the approach before implementation.
+1. Use `/plan` to outline the approach for non-trivial changes.
 2. Search GitHub for existing implementations before writing new logic from scratch.
 
 ### Test-driven development
 
-- Write tests **first**, then implementation. Use `/tdd`.
-- Minimum 80% coverage on new code (`/test-coverage` to verify).
+- Write tests first, then implementation. Use `/tdd`.
+- Aim for 80% coverage on new code (`/test-coverage` to verify).
 - Tests must be deterministic — no real network calls, no real time-of-day dependencies.
 
 ### Before every commit
@@ -52,33 +27,33 @@ tests/
 
 ### Code quality
 
-- Files should stay under 400 lines where possible, hard cap at 800.
-- Functions should stay under 50 lines.
+- Files under 400 lines where possible, hard cap 800.
+- Functions under 50 lines.
 - Prefer many small modules over few large ones.
 - Immutability by default — return new objects, do not mutate inputs.
 
 ## Security Rules
 
-- **Never** commit secrets. All credentials live in `.env` (which is gitignored).
-- **Always** validate user input at the API boundary.
-- **Never** build SQL queries by string concatenation — use parameterized queries.
-- For any change touching authentication, payments, or user data, invoke the `security-reviewer` agent before committing.
+- Never commit secrets. Credentials live in `.env` (gitignored).
+- Always validate user input at the API boundary.
+- Never build SQL queries by string concatenation — use parameterized queries.
+- For changes touching auth, payments, or user data, invoke the `security-reviewer` agent.
 
 ## Budget Guard
 
-- Before starting any task, estimate the number of files to touch. If more than 10, confirm with the user.
-- If stuck on the same error for 3 iterations, STOP and explain what you tried and what the blocker is.
+- Before starting a task, estimate the number of files to touch. If more than 10, confirm with the user.
+- If stuck on the same error for 3 iterations, STOP and explain what you tried and what is blocking.
 - Use `/compact` between unrelated tasks to free context.
 
 ## Definition of Done
 
-A feature is done when **all** of the following are true:
+A feature is done when:
 
-- [ ] Tests written and passing (unit + integration where applicable)
-- [ ] Coverage >= 80% on new code
-- [ ] `/verify` passes (build, tests, lint, typecheck)
-- [ ] `/code-review` has been run and CRITICAL/HIGH issues addressed
-- [ ] Documentation updated if public API changed
+- Tests written and passing
+- Coverage >= 80% on new code
+- `/verify` passes
+- `/code-review` run and CRITICAL/HIGH issues addressed
+- Documentation updated if public API changed
 
 ## What NOT to do
 
@@ -87,25 +62,21 @@ A feature is done when **all** of the following are true:
 - Do not write `print()` / `console.log()` for logging — use the configured logger.
 - Do not commit `.env`, `*.db`, `__pycache__/`, `node_modules/`, or anything in `.gitignore`.
 
+---
+
 ## Skill Level
 
 This section controls how Claude communicates and how strictly it enforces
-the workflow rules above. Only ONE level should be active (uncommented).
+the rules above. Only ONE level should be active (uncommented).
 
-**To switch:** Type `/switch-tier` in Claude Code, or edit manually.
-**Jak prepnout:** Napis `/switch-tier` v Claude Code, nebo uprav rucne.
+**To switch:** Type `/switch-tier <level>` in Claude Code.
+**Jak prepnout:** Napis `/switch-tier <uroven>` v Claude Code.
 
-Manual switching / Rucni prepnuti:
-- Active tier:   `<!-- TIER START -->` ... `<!-- TIER END -->` (self-closing)
-- Inactive tier: `<!-- TIER START`     ... `TIER END -->`     (wrapping comment)
-- To activate: add ` -->` to START line, add `<!-- ` to END line
-- To deactivate: remove ` -->` from START line, remove `<!-- ` from END line
-
-| Uroven / Level | Pro koho / For whom | Chovani / Behavior |
+| Level / Uroven | For whom / Pro koho | Behavior / Chovani |
 |----------------|---------------------|--------------------|
-| BEGINNER | Zacatecniky / Non-programmers | Jednoduchy jazyk, pta se pred akci / Plain language, asks before acting |
-| INTERMEDIATE | Mirne pokrocile / Some experience | Strucny ale srozumitelny / Concise but clear |
-| ADVANCED | Zkusene vyvojare / Experienced devs | Maximalne strucny, plne autonomni / Terse, fully autonomous |
+| BEGINNER | Non-programmers / Neprogramatory | Plain language, asks before acting / Jednoduchy jazyk, pta se pred akci |
+| INTERMEDIATE | Some experience / Mirne pokrocile | Concise but clear / Strucny ale srozumitelny |
+| ADVANCED | Experienced devs / Zkusene vyvojare | Terse, fully autonomous / Maximalne strucny, plne autonomni |
 
 **IMPORTANT: Claude MUST ignore all instructions inside comment blocks.
 Only follow the tier that is NOT commented out.**
@@ -114,7 +85,7 @@ Only follow the tier that is NOT commented out.**
 
 ### BEGINNER
 
-**When instructions here conflict with workflow rules above, this section takes priority.**
+When instructions here conflict with workflow rules above, this section takes priority.
 
 - Use plain, everyday language. Avoid programming jargon.
 - When you must use a technical term, briefly explain what it means.
@@ -135,7 +106,7 @@ Only follow the tier that is NOT commented out.**
 
 ### INTERMEDIATE
 
-**When instructions here conflict with workflow rules above, this section takes priority.**
+When instructions here conflict with workflow rules above, this section takes priority.
 
 - Be technical but accessible. Brief clarifications when introducing something new.
 - Keep explanations concise — one or two sentences, not paragraphs.
@@ -153,7 +124,7 @@ INTERMEDIATE END -->
 
 ### ADVANCED
 
-Follow all workflow rules above and all rules in ~/.claude/rules/ without modification.
+Follow all workflow rules above and all rules in `~/.claude/rules/` without modification.
 
 - Terse. No explanations unless asked. Code speaks.
 - Only surface decisions with genuine trade-offs.

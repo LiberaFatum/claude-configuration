@@ -1,10 +1,14 @@
 ---
-description: Initialize a new project with CLAUDE.md, .gitignore, and .env.example from templates.
+description: Initialize a new project with CLAUDE.md, .gitignore, and .env.example from templates. Tier-aware alternative to the built-in /init.
 ---
 
 # Init Project
 
 Set up a new project directory with the right configuration files for Claude Code.
+
+> Renamed from `/init` to avoid collision with Claude Code's built-in `/init` command
+> (which scans the codebase to generate CLAUDE.md). Use this command when you want a
+> tier-aware CLAUDE.md from the curated templates.
 
 ## Arguments
 

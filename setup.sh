@@ -118,7 +118,7 @@ cp "$WORK_DIR/agents/"*.md "$CLAUDE_DIR/agents/"
 # Commands
 cp "$WORK_DIR/commands/"*.md "$CLAUDE_DIR/commands/"
 
-# Templates (so /init and onboarding can find them in any project)
+# Templates (so /init-project and onboarding can find them in any project)
 cp "$WORK_DIR/templates/"*.md "$CLAUDE_DIR/templates/"
 
 # === MERGE PERMISSIONS ===

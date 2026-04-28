@@ -1,427 +1,278 @@
 # Advanced Cheatsheet
 
-Complete reference for getting maximum value from this configuration.
+Reference for what this configuration provides. Assumes you know Claude Code basics.
 
 ---
 
-## Optimal Workflow
+## Recommended workflow
 
 ```
-1. /plan "feature description"     →  Claude creates plan, you approve
-2. /tdd                            →  Tests first, then implementation
-3. /code-review                    →  Catches bugs before commit
-4. /verify                         →  Build + lint + typecheck + tests
-5. git commit                      →  Conventional commit format
+/plan "feature description"     # plan → approve
+/tdd                            # tests first, then code
+/code-review                    # review uncommitted changes
+/verify                         # build + lint + typecheck + tests
+git commit                      # conventional commit
 ```
 
-Between unrelated tasks: `/compact` to free context and save tokens.
+`/compact` between unrelated tasks. `Esc` to interrupt mid-response.
 
 ---
 
-## All Commands Reference
+## Commands
 
-### /plan — Plan before coding
+| Command | Use when |
+|---------|----------|
+| `/plan "..."` | Before any non-trivial change. Pauses for approval before code. |
+| `/tdd "..."` | Implementing new logic. Forces RED-GREEN-REFACTOR. |
+| `/code-review` | Before commit. Local diff or `/code-review <PR#>` for GitHub PRs. |
+| `/verify` | Before commit. Auto-detects stack, runs build + lint + typecheck + tests. |
+| `/build-fix` | Build is red, you want minimal fix. Won't refactor. |
+| `/test-coverage` | After tests, verifies 80% target. |
+| `/refactor-clean` | After feature is complete. Removes dead code. |
+| `/init-project [type]` | New project. Creates CLAUDE.md + .gitignore + .env.example. |
+| `/switch-tier <level>` | Toggle BEGINNER / INTERMEDIATE / ADVANCED. Creates CLAUDE.md if missing. |
 
-**When:** Before ANY non-trivial task (new feature, refactoring, complex bug fix).
-
-```
-/plan "add user authentication with JWT"
-/plan "refactor the scraper module to use async"
-/plan "fix the race condition in cart checkout"
-```
-
-Claude creates a step-by-step plan and waits for your approval before writing code. This alone prevents 30-50% of wasted tokens from wrong-direction implementations.
-
-**Pro tip:** If the plan looks off, say "no, I want X instead" — redirecting a plan costs ~500 tokens. Redirecting an implementation costs 5000+.
-
-### /tdd — Test-driven development
-
-**When:** Implementing any new logic.
-
-```
-/tdd "liquidity score calculator"
-/tdd "user registration endpoint"
-/tdd "ERC20 token factory"
-```
-
-Forces RED-GREEN-REFACTOR cycle: write failing tests, implement to pass, then refactor. Produces more reliable code on the first try.
-
-### /code-review — Review before committing
-
-**When:** After writing or modifying code, before every commit.
-
-```
-/code-review                  # Review local uncommitted changes
-/code-review 42               # Review GitHub PR #42
-/code-review https://...      # Review PR by URL
-```
-
-Catches security vulnerabilities, code quality issues, and bugs. Issues are rated CRITICAL/HIGH/MEDIUM/LOW.
-
-### /verify — Run all quality checks
-
-**When:** Before committing, after /code-review.
-
-```
-/verify            # Stop at first failure
-/verify --all      # Run everything, report all results
-```
-
-Auto-detects project type (Python/Node/Solidity/Rust/Go) and runs the appropriate build, lint, typecheck, and test commands.
-
-### /build-fix — Fix build errors
-
-**When:** Build fails and you don't want to debug manually.
-
-```
-/build-fix
-```
-
-Reads error output, makes minimal changes to fix. Will not refactor or add features — just gets the build green.
-
-### /test-coverage — Check test coverage
-
-**When:** After writing tests, to verify you hit the 80% target.
-
-```
-/test-coverage
-```
-
-### /refactor-clean — Remove dead code
-
-**When:** After a feature is complete and you want to clean up.
-
-```
-/refactor-clean
-```
-
-Finds unused functions, variables, imports, and safely removes them.
-
-### /init — Initialize a new project
-
-**When:** Starting a new project directory.
-
-```
-/init                    # Base template (fill in yourself)
-/init real-estate        # Pre-filled for scraper project
-/init song-gift          # Pre-filled for AI music site
-/init eshop              # Pre-filled for e-commerce
-/init defi               # Pre-filled for smart contracts
-```
-
-Creates CLAUDE.md, .gitignore, and .env.example in the current directory.
-
-### /switch-tier — Switch skill level
-
-**When:** Changing how Claude communicates and enforces workflow rules.
-
-```
-/switch-tier beginner        # Plain language, asks before acting, no TDD
-/switch-tier intermediate    # Concise but clear, moderate autonomy
-/switch-tier advanced        # Terse, fully autonomous, full workflow
-```
-
-Edits the `CLAUDE.md` in your project root — swaps the active tier by toggling comment markers. Defaults to BEGINNER on fresh installs.
+`/init-project` types: `real-estate`, `song-gift`, `eshop`, `defi`, or empty (base).
 
 ---
 
-## Rules Reference
+## Rules (auto-loaded)
 
-Rules load automatically on every prompt. You don't invoke them — they shape Claude's behavior.
+Loaded on every prompt. Shape Claude's behavior — you don't invoke them.
 
-### Common rules (all projects)
+**Common (all projects):** `coding-style`, `security`, `testing`, `git-workflow`,
+`development-workflow`, `code-review`, `onboarding`.
 
-| Rule | What it does |
-|------|-------------|
-| `coding-style` | Immutability, KISS, DRY, YAGNI, file size limits (<400 lines), function limits (<50 lines) |
-| `security` | Never commit secrets, validate input, parameterized queries, rate limiting |
-| `testing` | 80% coverage minimum, TDD workflow, AAA pattern, web-specific testing (a11y, responsive) |
-| `git-workflow` | Conventional commits format: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:` |
-| `development-workflow` | Research-Plan-TDD-Review-Commit pipeline |
-| `code-review` | Review checklist, severity levels, security triggers |
+**Stack-specific:** `python/`, `typescript/`, `web/`, `solidity/` (opt-in).
 
-### Language-specific rules
-
-| Language | Rules | Loaded when |
-|----------|-------|-------------|
-| Python | coding-style, security, testing, patterns | `.py` files in scope |
-| TypeScript | coding-style, security, patterns | `.ts`/`.tsx`/`.js`/`.jsx` files |
-| Web | coding-style, security, performance, design-quality, patterns | Frontend work |
-| Solidity | coding-style, security, testing | `.sol` files (opt-in install) |
-
-### Key behaviors these rules enforce
-
-- **Immutability**: Claude returns new objects instead of mutating inputs
-- **No console.log/print()**: Uses proper loggers
-- **Input validation**: Zod schemas (TS) or Pydantic (Python) at API boundaries
-- **Checks-Effects-Interactions**: For Solidity contracts
-- **Anti-template design**: Frontend code must look intentional, not like a default template
+Key behaviors enforced:
+- Immutability — return new objects, don't mutate
+- File limits — 400 lines target, 800 hard cap
+- Function limits — 50 lines
+- No `console.log` / `print()` for logging
+- Conventional commits
+- Input validation at API boundaries (Zod / Pydantic)
+- 80% test coverage target on new code
+- Anti-template frontend design (no default Tailwind/shadcn looks)
 
 ---
 
-## Agents Reference
+## Agents (auto-invoked)
 
-Agents are specialist sub-models Claude invokes automatically. You rarely need to call them directly.
+You don't call them by name. Claude routes work to them based on context.
 
-| Agent | Model | Auto-triggers when... |
-|-------|-------|----------------------|
-| `planner` | Opus | Complex feature request or `/plan` |
-| `code-reviewer` | Sonnet | `/code-review` or when code quality is questionable |
-| `tdd-guide` | Sonnet | `/tdd` or when writing tests |
-| `build-error-resolver` | Sonnet | Build fails |
-| `security-reviewer` | Sonnet | Code touches auth, payments, user data, crypto |
-| `python-reviewer` | Sonnet | Python code review |
-| `typescript-reviewer` | Sonnet | TypeScript/JS code review |
-| `database-reviewer` | Sonnet | SQL, migrations, schema changes |
-| `refactor-cleaner` | Sonnet | `/refactor-clean` |
+| Agent | Triggered by |
+|-------|--------------|
+| `planner` | `/plan` or complex feature requests |
+| `code-reviewer` | `/code-review` or post-edit review |
+| `tdd-guide` | `/tdd` or test writing |
+| `build-error-resolver` | `/build-fix` or build failures |
+| `security-reviewer` | Auth, payments, user data, crypto changes |
+| `python-reviewer` | Python file review |
+| `typescript-reviewer` | TS/JS file review |
+| `database-reviewer` | SQL, migrations, schema changes |
+| `refactor-cleaner` | `/refactor-clean` |
 
-**Token impact:** Agents load on-demand only. They cost tokens when invoked, not on every prompt.
-
----
-
-## Skills Reference
-
-Skills are large knowledge documents loaded on-demand when Claude needs detailed patterns.
-
-| Skill | Size | Triggers when... |
-|-------|------|------------------|
-| `postgres-patterns` | 147 lines | Working with PostgreSQL, writing SQL, creating migrations |
-| `frontend-patterns` | 642 lines | Working with React components, state management, data fetching |
-
-**Token impact:** Skills only load when their topic is relevant. They don't add to base prompt cost.
+Agents load on demand — no cost when not invoked.
 
 ---
 
-## Token Savings Guide
+## Skills (`--full` install only)
 
-### What costs tokens
-
-| Component | Tokens/prompt | When |
-|-----------|---------------|------|
-| Rules (all loaded) | ~1400 | Every prompt |
-| CLAUDE.md | ~300-500 | Every prompt |
-| Agent invocation | ~300-1100 | On-demand |
-| Skill activation | ~200-800 | On-demand |
-| Your message + code context | Varies | Every prompt |
-
-### How to minimize waste
-
-1. **Always /plan first** — A bad plan costs ~500 tokens to fix. A bad implementation costs 5000-20000 tokens in fix loops. Planning ROI is 10-40x.
-
-2. **Use /compact between unrelated tasks** — After finishing a task, `/compact` clears accumulated context. A fresh context means cheaper, faster, more accurate responses.
-
-3. **Be specific in prompts** — "Add user auth" → Claude guesses, likely wrong. "Add JWT auth with refresh tokens using the auth/ module pattern from the existing code" → Claude gets it right first try.
-
-4. **Don't ask Claude to fix its own bugs in a loop** — If it fails 3 times, the Budget Guard in CLAUDE.md stops it. Read the error yourself, give Claude the specific diagnosis.
-
-5. **One task per session** — Don't mix "fix the login bug" with "also add a new feature." Each task gets its own clean context.
-
-6. **Use the right model** — Opus for planning and architecture, Sonnet for routine coding. You can switch with `/model`.
-
-### Estimated savings from this configuration
-
-| Scenario | Without config | With config | Savings |
-|----------|---------------|-------------|---------|
-| Bug fix (simple) | ~15K tokens | ~10K tokens | ~33% |
-| New feature (medium) | ~80K tokens | ~45K tokens | ~44% |
-| Feature with bugs | ~150K tokens | ~60K tokens | ~60% |
-| Wrong-direction implementation | ~50K tokens wasted | ~2K tokens (plan catch) | ~96% |
-
-The biggest savings come from **preventing wrong-direction work** (/plan) and **stopping bug loops** (Budget Guard + 3-attempt limit).
+| Skill | Activates on |
+|-------|--------------|
+| `postgres-patterns` | SQL, migrations, schema work |
+| `frontend-patterns` | React components, state, data fetching |
 
 ---
 
-## Hooks Reference (opt-in)
-
-Installed with `--with-hooks` or `--full`.
+## Hooks (`--with-hooks` install only)
 
 | Hook | Trigger | Effect |
 |------|---------|--------|
-| `post-edit-file-size-warn.sh` | After Claude edits a file | Warning if >400 lines, error if >800 |
-| `pre-commit-secrets-check.sh` | Before git commit | Blocks commits with API keys, private keys |
-| `post-edit-console-warn.sh` | After Claude edits a file | Warning about console.log/print() |
+| `post-edit-file-size-warn.sh` | After file edit | Warn >400 lines, error >800 |
+| `pre-commit-secrets-check.sh` | Before commit | Block commits containing API keys / private keys |
+| `post-edit-console-warn.sh` | After file edit | Warn about `console.log` / `print()` |
 
 ---
 
-## MCP Servers Reference (opt-in)
+## MCP servers (`--full` install only)
 
-Installed with `--full`.
-
-| Server | What it does | API key? |
-|--------|-------------|----------|
-| Context7 | Live library documentation lookup | No |
-| GitHub | PR management, code search | Yes (PAT) |
-| Playwright | Browser automation, E2E testing | No |
+| Server | Provides | Auth |
+|--------|----------|------|
+| Context7 | Live library docs | None |
+| GitHub | PR / code search | PAT |
+| Playwright | Browser automation | None |
 
 ---
 
-## Advanced Tips
+## Token discipline
 
-### Custom rules for a specific project
+What costs tokens on every prompt:
 
-Add project-local rules in `<project>/.claude/rules/`:
+| Component | Approx tokens |
+|-----------|---------------|
+| All loaded rules | ~1400 |
+| CLAUDE.md | ~300–500 |
+| Your message + cited context | varies |
+
+What doesn't cost tokens until used: agents, skills, hooks, MCP servers.
+
+The biggest leaks (in rough order):
+
+1. **Wrong-direction implementations** — fix with `/plan` before coding.
+2. **Bug loops** — Budget Guard halts after 3 attempts. Read the error yourself.
+3. **Stale context across topics** — `/compact` between unrelated tasks.
+4. **Vague prompts** — cite files with `@path`, name behaviors, name acceptance criteria.
+5. **Mixed tasks in one session** — keep one feature per session.
+
+---
+
+## Per-project customization
+
+Add project-local rules in `.claude/rules/` inside the project:
 
 ```bash
 mkdir -p .claude/rules
-echo "Always use snake_case for database column names." > .claude/rules/database.md
+echo "Always use snake_case for database column names." > .claude/rules/db.md
 ```
 
-These load only for that project.
+These layer on top of the global rules and only load for that project.
 
-### Running parallel reviews
+---
 
-When working on a large PR, ask Claude to review security and code quality in parallel:
+## Tier behavior summary
 
-```
-Review this PR — run security-reviewer and code-reviewer agents in parallel.
-```
+| Tier | Communication | Autonomy | TDD | Agents |
+|------|---------------|----------|-----|--------|
+| BEGINNER | Plain language, explains everything | Asks before each action | Optional | Off |
+| INTERMEDIATE | Concise, terms with brief clarifications | Acts on routine tasks, asks on architecture | Tests alongside code | On (silent) |
+| ADVANCED | Terse, no narration | Full autonomy through Plan→TDD→Review→Commit | Mandatory | On (named) |
 
-### Debugging token usage
-
-After a session, check `/usage` to see how many tokens were consumed. If it's higher than expected:
-- Were there fix loops? (Budget Guard should prevent this)
-- Did you switch topics without `/compact`?
-- Did you provide enough context in the initial prompt?
+Switch with `/switch-tier <level>`. Tier lives in your project's `CLAUDE.md`, so each project can run a different tier.
 
 ---
 
 # Cheatsheet pro pokrocile (CZ)
 
-Kompletni reference pro maximalni vyuziti teto konfigurace.
+Reference k tomu, co tato konfigurace nabizi. Predpoklada znalost zakladu Claude Code.
 
 ---
 
-## Optimalni workflow
+## Doporuceny workflow
 
 ```
-1. /plan "popis funkce"              →  Claude vytvori plan, ty schvalis
-2. /tdd                              →  Nejdriv testy, pak implementace
-3. /code-review                      →  Odchyti bugy pred commitem
-4. /verify                           →  Build + lint + typecheck + testy
-5. git commit                        →  Conventional commit format
+/plan "popis funkce"            # plan → schvaleni
+/tdd                            # nejdriv testy, pak kod
+/code-review                    # kontrola necommitnutych zmen
+/verify                         # build + lint + typecheck + testy
+git commit                      # conventional commit
 ```
 
-Mezi nesouvisejicimi ukoly: `/compact` pro uvolneni kontextu a usetreni tokenu.
+`/compact` mezi nesouvisejicimi ukoly. `Esc` pro preruseni odpovedi.
 
 ---
 
-## Prehled vsech prikazu
+## Prikazy
 
-| Prikaz | Kdy pouzit | Co dela |
-|--------|------------|---------|
-| `/plan` | Pred jakymkoliv netrivialnim ukolem | Vytvori plan krok za krokem, ceka na schvaleni |
-| `/tdd` | Pri implementaci nove logiky | RED-GREEN-REFACTOR cyklus |
-| `/code-review` | Po napsani/uprave kodu, pred commitem | Kontrola bezpecnosti, kvality, bugu |
-| `/verify` | Pred commitem, po /code-review | Spusti build + lint + typecheck + testy |
-| `/build-fix` | Kdyz build selze | Minimalni zmeny pro opravu buildu |
-| `/test-coverage` | Po napsani testu | Overi 80%+ pokryti |
-| `/refactor-clean` | Po dokonceni funkce | Najde a odstrani mrtvy kod |
-| `/init` | Zakladani noveho projektu | Vytvori CLAUDE.md, .gitignore, .env.example |
-| `/switch-tier` | Zmena urovne | Prepne beginner/intermediate/advanced v CLAUDE.md |
+| Prikaz | Pouzit kdy |
+|--------|------------|
+| `/plan "..."` | Pred kazdou netrivialni zmenou. Ceka na schvaleni. |
+| `/tdd "..."` | Implementace nove logiky. Vynuti RED-GREEN-REFACTOR. |
+| `/code-review` | Pred commitem. Lokalni diff nebo `/code-review <PR#>`. |
+| `/verify` | Pred commitem. Detekuje stack, spusti build + lint + typecheck + testy. |
+| `/build-fix` | Build je cerveny, chces minimalni opravu. |
+| `/test-coverage` | Po testech, overi 80% cil. |
+| `/refactor-clean` | Po dokoncene funkci. Smaze mrtvy kod. |
+| `/init-project [typ]` | Novy projekt. Vytvori CLAUDE.md + .gitignore + .env.example. |
+| `/switch-tier <uroven>` | Prepnuti BEGINNER / INTERMEDIATE / ADVANCED. Vytvori CLAUDE.md pokud chybi. |
 
----
-
-## Reference pravidel
-
-Pravidla se nacitaji automaticky pri kazdem promptu. Nemusite je vyvolavat — formovaji chovani Clauda.
-
-### Spolecna pravidla (vsechny projekty)
-
-| Pravidlo | Co dela |
-|----------|---------|
-| `coding-style` | Immutabilita, KISS, DRY, YAGNI, limity velikosti souboru (<400 radku), limity funkci (<50 radku) |
-| `security` | Nikdy necommitovat tajemstvi, validovat vstup, parametrizovane dotazy, rate limiting |
-| `testing` | 80% pokryti minimum, TDD workflow, AAA vzor |
-| `git-workflow` | Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:` |
-| `development-workflow` | Research-Plan-TDD-Review-Commit pipeline |
-| `code-review` | Review checklist, urovne zavaznosti, bezpecnostni triggery |
-
-### Jazykove specificka pravidla
-
-| Jazyk | Pravidla | Kdy se nacitaji |
-|-------|----------|-----------------|
-| Python | coding-style, security, testing, patterns | `.py` soubory |
-| TypeScript | coding-style, security, patterns | `.ts`/`.tsx`/`.js`/`.jsx` soubory |
-| Web | coding-style, security, performance, design-quality, patterns | Frontendova prace |
-| Solidity | coding-style, security, testing | `.sol` soubory (opt-in) |
+Typy `/init-project`: `real-estate`, `song-gift`, `eshop`, `defi`, nebo prazdne (zaklad).
 
 ---
 
-## Reference agentu
+## Pravidla (auto-load)
 
-Agenti jsou specialistni sub-modely, ktere Claude vyvolava automaticky.
+Nacitaji se pri kazdem promptu. Formuji chovani Clauda — nevyvolavate je.
 
-| Agent | Model | Automaticky se spusti kdyz... |
-|-------|-------|-------------------------------|
-| `planner` | Opus | Komplexni pozadavek nebo `/plan` |
-| `code-reviewer` | Sonnet | `/code-review` nebo pochybna kvalita kodu |
-| `tdd-guide` | Sonnet | `/tdd` nebo psani testu |
-| `build-error-resolver` | Sonnet | Build selze |
-| `security-reviewer` | Sonnet | Kod se dotyka auth, plateb, uzivatelskeych dat |
-| `python-reviewer` | Sonnet | Python code review |
-| `typescript-reviewer` | Sonnet | TypeScript/JS code review |
-| `database-reviewer` | Sonnet | SQL, migrace, zmeny schematu |
-| `refactor-cleaner` | Sonnet | `/refactor-clean` |
+**Spolecna:** `coding-style`, `security`, `testing`, `git-workflow`,
+`development-workflow`, `code-review`, `onboarding`.
 
-**Dopad na tokeny:** Agenti se nacitaji on-demand. Stoji tokeny jen kdyz jsou vyvolani, ne pri kazdem promptu.
+**Podle stacku:** `python/`, `typescript/`, `web/`, `solidity/` (opt-in).
 
----
-
-## Pruvodce usporou tokenu
-
-### Co stoji tokeny
-
-| Komponenta | Tokeny/prompt | Kdy |
-|------------|---------------|-----|
-| Pravidla (vsechna nactena) | ~1400 | Kazdy prompt |
-| CLAUDE.md | ~300-500 | Kazdy prompt |
-| Vyvolani agenta | ~300-1100 | On-demand |
-| Aktivace skillu | ~200-800 | On-demand |
-
-### Jak minimalizovat plytvan
-
-1. **Vzdy nejdriv /plan** — Spatny plan stoji ~500 tokenu na opravu. Spatna implementace 5000-20000.
-2. **Pouzivat /compact mezi ukoly** — Cisty kontext = levnejsi, rychlejsi, presnejsi odpovedi.
-3. **Byt konkretni v promptech** — "Pridej auth" → Claude hada. "Pridej JWT auth s refresh tokeny pomoci vzoru z auth/ modulu" → Claude trafi naprvic.
-4. **Nenechat Clauda opravovat vlastni bugy v smycce** — Pokud selze 3x, Budget Guard ho zastavi. Prectete chybu sami.
-5. **Jeden ukol na session** — Nemichejte "oprav login bug" s "taky pridej novou funkci."
-6. **Spravny model** — Opus pro planovani a architekturu, Sonnet pro rutinni kodovani. Prepnuti: `/model`.
-
-### Odhadovane uspory z teto konfigurace
-
-| Scenar | Bez konfigurace | S konfiguraci | Uspora |
-|--------|-----------------|---------------|--------|
-| Jednoduchy bug fix | ~15K tokenu | ~10K tokenu | ~33% |
-| Stredne velka funkce | ~80K tokenu | ~45K tokenu | ~44% |
-| Funkce s bugy | ~150K tokenu | ~60K tokenu | ~60% |
-| Spatny smer implementace | ~50K tokenu | ~2K (plan to chyti) | ~96% |
+Klicove vynucene chovani:
+- Immutabilita — vracet nove objekty, nemenit
+- Limity souboru — cil 400 radku, hard cap 800
+- Limity funkci — 50 radku
+- Zadne `console.log` / `print()` pro logovani
+- Conventional commits
+- Validace vstupu na API hranicich (Zod / Pydantic)
+- Cil 80% pokryti testy
+- Anti-template frontend design
 
 ---
 
-## Pokrocile tipy
+## Agenti (auto-vyvolani)
 
-### Vlastni pravidla pro konkretni projekt
+Nevolas je jmenem. Claude smeruje praci podle kontextu.
 
-Pridejte lokalni pravidla v `<projekt>/.claude/rules/`:
+| Agent | Spousti se kdyz |
+|-------|-----------------|
+| `planner` | `/plan` nebo komplexni pozadavek |
+| `code-reviewer` | `/code-review` nebo review po editaci |
+| `tdd-guide` | `/tdd` nebo psani testu |
+| `build-error-resolver` | `/build-fix` nebo selhani buildu |
+| `security-reviewer` | Auth, platby, uzivatelska data, krypto |
+| `python-reviewer` | Review Python souboru |
+| `typescript-reviewer` | Review TS/JS souboru |
+| `database-reviewer` | SQL, migrace, zmeny schematu |
+| `refactor-cleaner` | `/refactor-clean` |
+
+Agenti se nacitaji on-demand — nestoji nic pokud nejsou vyvolani.
+
+---
+
+## Disciplina pri tokenech
+
+Co stoji tokeny pri kazdem promptu:
+
+| Komponenta | Pribl. tokeny |
+|------------|---------------|
+| Vsechna nactena pravidla | ~1400 |
+| CLAUDE.md | ~300–500 |
+| Vase zprava + odkazy | promenne |
+
+Co nestoji tokeny do pouziti: agenti, skills, hooks, MCP servery.
+
+Nejvetsi unik (v hrubem poradi):
+
+1. **Spatny smer implementace** — resis pomoci `/plan` pred kodovanim.
+2. **Smycky pri opravach** — Budget Guard zastavi po 3 pokusech. Prectete chybu sami.
+3. **Stary kontext mezi tematy** — `/compact` mezi nesouvisejicimi ukoly.
+4. **Vague prompty** — cituj soubory pres `@cesta`, jmenuj chovani, jmenuj kriteria.
+5. **Smichane ukoly v jedne session** — jedna funkce na session.
+
+---
+
+## Customizace per projekt
+
+Pridejte projektove pravidla do `.claude/rules/` v projektu:
 
 ```bash
 mkdir -p .claude/rules
-echo "Vzdy pouzivej snake_case pro nazvy databazovych sloupcu." > .claude/rules/database.md
+echo "Vzdy pouzivej snake_case pro nazvy databazovych sloupcu." > .claude/rules/db.md
 ```
 
-Tato se nacitaji jen pro dany projekt.
+Vrstvi se nad globalni pravidla a nacitaji se jen pro dany projekt.
 
-### Paralelni review
+---
 
-Pri praci na velkem PR pozadejte Clauda o paralelni kontrolu:
+## Shrnuti chovani po urovnich
 
-```
-Zkontroluj tento PR — spust security-reviewer a code-reviewer agenty paralelne.
-```
+| Uroven | Komunikace | Autonomie | TDD | Agenti |
+|--------|------------|-----------|-----|--------|
+| BEGINNER | Jednoduchy jazyk, vysvetluje vse | Pta se pred kazdou akci | Volitelne | Vypnuti |
+| INTERMEDIATE | Strucne, terminy s vysvetlenim | Rutina samostatne, architektura s dotazem | Testy spolu s kodem | Zapnuti (tise) |
+| ADVANCED | Maximalne strucne, bez narace | Plna autonomie pres Plan→TDD→Review→Commit | Povinne | Zapnuti (jmenovani) |
 
-### Ladeni spotreby tokenu
-
-Po session zkontrolujte `/usage`. Pokud je vyssi nez ocekavane:
-- Byly tam opravne smycky? (Budget Guard by mel zabranit)
-- Zmenili jste tema bez `/compact`?
-- Dali jste dostatek kontextu v pocatecnim promptu?
+Prepnuti: `/switch-tier <uroven>`. Uroven je v `CLAUDE.md` projektu, takze kazdy projekt muze bezet na jine urovni.

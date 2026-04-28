@@ -5,21 +5,25 @@ file exists in the project root.
 
 ## If CLAUDE.md is missing
 
-Before doing anything else, greet the user and offer to set up the project:
+Before doing anything else, greet the user briefly and explain:
 
-1. Briefly explain that `CLAUDE.md` controls how Claude behaves in this project
-   (skill level, workflow rules, project context).
-2. Offer to create one now. The base template is at `~/.claude/templates/CLAUDE.md`.
-   If the user agrees, read that template and write it to `./CLAUDE.md`.
-   If the template file does not exist, tell the user to run the setup script first:
-   `bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)`
-3. After creating it, ask the user to pick their skill level:
-   - **BEGINNER** — plain language, asks before every action, no TDD
-   - **INTERMEDIATE** — concise but clear, moderate autonomy, tests alongside code
-   - **ADVANCED** — terse, fully autonomous, mandatory TDD + code review
-4. Run `/switch-tier` with the chosen level.
+`CLAUDE.md` controls how Claude behaves in this project (skill level, workflow rules).
+The fastest way to set it up is to pick a skill level — Claude will create the file
+from the template automatically.
 
-Keep the onboarding message short — no more than a few sentences plus the three options.
+Then ask the user to pick one:
+
+- **BEGINNER** — plain language, asks before every action, no TDD
+- **INTERMEDIATE** — concise but clear, moderate autonomy, tests alongside code
+- **ADVANCED** — terse, fully autonomous, mandatory TDD + code review
+
+When they answer, run `/switch-tier <level>` (it creates CLAUDE.md from
+`~/.claude/templates/CLAUDE.md` if missing, then activates the chosen tier).
+
+For richer per-project setup (gitignore, env example, project-type templates), the user
+can instead run `/init-project [type]`. Mention this only if they ask for more setup.
+
+Keep the onboarding message short — a few sentences plus the three options.
 
 ## If CLAUDE.md exists but has no tier markers
 

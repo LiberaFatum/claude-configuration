@@ -33,11 +33,15 @@ cd my-project
 claude
 ```
 
-Claude will automatically detect that the project has no `CLAUDE.md` and offer to
-create one. It will ask you to pick your skill level (beginner / intermediate / advanced).
-That's the full onboarding — no extra steps needed.
+Claude will automatically detect that the project has no `CLAUDE.md` and ask you to
+pick a skill level (beginner / intermediate / advanced). When you answer,
+`/switch-tier <level>` creates the CLAUDE.md from the template and activates your tier.
+That's the full onboarding — one command, no extra steps.
 
-> **Or set up manually:** run `/init` to create `CLAUDE.md`, then `/switch-tier` to pick your level.
+> **For richer setup** (`.gitignore`, `.env.example`, project-type templates),
+> run `/init-project [real-estate|song-gift|eshop|defi]` instead.
+> The command is named `/init-project` (not `/init`) to avoid collision with
+> Claude Code's built-in `/init` that scans the codebase.
 
 ### Install Options
 
@@ -72,8 +76,8 @@ Between unrelated tasks: `/compact` (frees context, saves tokens).
 | `/verify` | Run build + lint + typecheck + tests |
 | `/test-coverage` | Check test coverage |
 | `/refactor-clean` | Remove dead code |
-| `/switch-tier` | Switch skill level in CLAUDE.md (beginner/intermediate/advanced) |
-| `/init` | Set up a new project with CLAUDE.md template |
+| `/switch-tier` | Switch skill level in CLAUDE.md (creates CLAUDE.md from template if missing) |
+| `/init-project` | Full project setup: CLAUDE.md + .gitignore + .env.example (use instead of built-in `/init`) |
 
 ## Agents (Auto-Invoked)
 
@@ -208,10 +212,14 @@ cd muj-projekt
 claude
 ```
 
-Claude automaticky zjisti, ze projekt nema `CLAUDE.md`, a nabidne ho vytvorit.
-Zepta se na uroven dovednosti (beginner / intermediate / advanced). Tim je onboarding hotovy.
+Claude zjisti, ze projekt nema `CLAUDE.md`, a zepta se na uroven dovednosti
+(beginner / intermediate / advanced). Po odpovedi `/switch-tier <uroven>` vytvori
+`CLAUDE.md` ze sablony a zapne zvolenou uroven. Tim je onboarding hotovy.
 
-> **Nebo rucne:** spust `/init` pro vytvoreni `CLAUDE.md`, pak `/switch-tier` pro vyber urovne.
+> **Pro plne nastaveni** (`.gitignore`, `.env.example`, sablony pro typy projektu)
+> spust `/init-project [real-estate|song-gift|eshop|defi]`.
+> Prikaz se jmenuje `/init-project` (ne `/init`), aby nekolidoval s vestavenym
+> `/init` v Claude Code, ktery skenuje kod.
 
 ## Tri prikazy, ktere meni vysledek
 

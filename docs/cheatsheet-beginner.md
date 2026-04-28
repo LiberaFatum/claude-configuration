@@ -1,534 +1,313 @@
-# Beginner's Guide to Claude Code
+# Beginner Cheatsheet
 
-This guide is for people who are new to programming or new to Claude Code. It will teach you how to work with Claude effectively and not waste money on tokens.
-
----
-
-## What is Claude Code?
-
-Claude Code is an AI programmer that lives in your terminal. You describe what you want, and it writes the code for you. But like any tool, the quality of what you get depends on how you use it.
-
-This configuration makes Claude:
-- Plan before coding (fewer mistakes)
-- Write tests before code (catches bugs early)
-- Review its own code (catches problems before they land)
-- Stop and ask you when it's unsure (no silent wrong turns)
+For people new to programming or new to Claude Code. Read this once, refer back as needed.
 
 ---
 
-## The Three Golden Rules
+## First time in a project
 
-### 1. Always plan first
-
-Before asking Claude to build anything, type:
-
-```
-/plan "what you want to build"
-```
-
-Claude will create a step-by-step plan and show it to you. Read it. If it sounds right, say "go ahead." If not, say what's wrong.
-
-**Why this matters:** Without a plan, Claude might build the wrong thing. Fixing a wrong implementation costs 10x more tokens than fixing a wrong plan.
-
-### 2. Review before committing
-
-After Claude finishes writing code, type:
-
-```
-/code-review
-```
-
-This checks for bugs, security problems, and code quality issues. Think of it as a second pair of eyes.
-
-### 3. Clean context between tasks
-
-When you finish one task and want to start a different one, type:
-
-```
-/compact
-```
-
-This frees up Claude's memory so it can focus on the new task. Without this, Claude carries old context around, which makes it slower, more expensive, and more confused.
-
----
-
-## How to Write Good Prompts
-
-Your prompt is the most important factor in getting good results. Here's how to write them:
-
-### Bad prompts (waste tokens, get wrong results)
-
-```
-make a website
-```
-
-```
-fix this
-```
-
-```
-add authentication
-```
-
-These are too vague. Claude has to guess what you want, and it will guess wrong.
-
-### Okay prompts (work but could be better)
-
-```
-Create a React component that shows a list of products with prices
-```
-
-```
-Fix the error in the login function — it returns 500 when the password is wrong
-```
-
-```
-Add JWT authentication to the FastAPI backend
-```
-
-These give Claude enough context to start working.
-
-### Best prompts (save tokens, get right results)
-
-```
-Create a React component called ProductList that:
-- Takes an array of products (name, price, image_url)
-- Shows them in a responsive grid (3 columns on desktop, 1 on mobile)
-- Each product card has name, price formatted as CZK, and image
-- Clicking a card opens the product detail page at /product/[id]
-```
-
-```
-Fix the login endpoint in src/api/auth.py:
-- When password is wrong, it currently returns 500 with a stack trace
-- It should return 401 with {"error": "Invalid credentials"}
-- The problem is on line 45 where it calls verify_password() without try/catch
-```
-
-```
-Add JWT authentication to the FastAPI backend:
-- Use python-jose for JWT tokens
-- Access token expires in 15 minutes, refresh token in 7 days
-- Store refresh tokens in the PostgreSQL users table
-- Protected endpoints should use a Depends(get_current_user) dependency
-- Follow the existing pattern in src/api/dependencies.py
-```
-
-**Pattern:** Tell Claude WHAT you want, WHERE it goes, and HOW it should work. The more specific you are, the fewer attempts Claude needs.
-
----
-
-## Your First Project Setup
-
-### Step 1: Install this configuration
-
-```bash
-bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
-```
-
-Restart Claude Code after installing.
-
-### Step 2: Start a new project
-
-```bash
-mkdir my-project
-cd my-project
-```
-
-The setup script already created a base `CLAUDE.md` in this folder. If you want a template for a specific project type, run in Claude Code:
-
-```
-/init eshop
-```
-
-### Step 3: Open CLAUDE.md and fill in the basics
-
-The CLAUDE.md file tells Claude about your project. Open it and fill in the `[TODO]` sections. If you're not sure, just describe what the project does in 2-3 sentences — that's enough to start.
-
-### Step 4: Set your skill level
-
-In Claude Code, type:
+Type one command:
 
 ```
 /switch-tier beginner
 ```
 
-This tells Claude to use simple language and ask before every action. You can also choose `intermediate` or `advanced` later as you get more comfortable.
-
-### Step 5: Start building
-
-```
-/plan "create a product listing page that shows products from the database"
-```
-
-Read the plan. If it looks right, say "go ahead."
+It creates `CLAUDE.md` and sets the easy mode (plain language, asks before acting).
+That's the entire onboarding.
 
 ---
 
-## Understanding Commands
+## Four things to know about the chat
 
-You don't need to memorize all of them. Start with these three:
+| Symbol | What it does | Example |
+|--------|--------------|---------|
+| `@` | Reference a file or folder | `Read @src/auth.py and explain what it does` |
+| `!` | Run a shell command | `! ls` or `! npm install` |
+| `/` | Run a Claude command | `/plan`, `/code-review` |
+| `Esc` | Interrupt Claude mid-response | Press it when Claude is going wrong |
 
-| Command | When to use it | What it does |
-|---------|---------------|-------------|
-| `/plan` | Before building anything | Creates a plan for you to review |
-| `/code-review` | After Claude writes code | Checks for bugs and problems |
-| `/verify` | Before committing code | Runs all tests and checks |
-
-When you're comfortable, add these:
-
-| Command | When to use it | What it does |
-|---------|---------------|-------------|
-| `/tdd` | When building a new feature | Writes tests first, then code |
-| `/build-fix` | When the code won't compile | Fixes build errors |
-| `/compact` | Between different tasks | Frees context, saves tokens |
-| `/init` | Starting a new project | Creates project config files |
+Use `@` constantly. It is the single biggest difference between vague prompts
+and precise ones — Claude reads the exact file you point at instead of guessing.
 
 ---
 
-## How to Save Money on Tokens
+## Five commands that matter
 
-Tokens = the units Claude charges for. More tokens = more expensive. Here's how to minimize waste:
+| Command | When to use it |
+|---------|----------------|
+| `/plan "what to build"` | Before any non-trivial task. Claude shows a plan, you approve. |
+| `/code-review` | After Claude writes code. Catches bugs before they land. |
+| `/verify` | Before committing. Runs build + tests + lint + typecheck. |
+| `/compact` | Between different tasks. Frees memory, saves money. |
+| `/switch-tier <level>` | Change skill mode (beginner / intermediate / advanced). |
 
-### 1. Be specific (saves 30-50%)
-
-Every time Claude guesses wrong and has to redo, you pay for both attempts. A specific prompt costs the same as a vague one, but gets it right the first time.
-
-### 2. Use /plan (saves 30-60%)
-
-A wrong implementation costs 5000-20000 tokens to fix. A wrong plan costs 500 tokens to fix. Always plan first.
-
-### 3. Use /compact (saves 10-20%)
-
-Old context makes every prompt more expensive. Clean it up between tasks.
-
-### 4. Don't fight bug loops
-
-If Claude tries to fix the same error 3 times and fails, it will stop and tell you. This is intentional — it prevents burning through tokens on a problem that needs human input.
-
-When this happens:
-- Read the error message yourself
-- Google it if needed
-- Tell Claude specifically what you think the problem is
-
-### 5. One task at a time
-
-Don't say "fix the login bug and also add product search and also update the navbar." Each task should be a separate conversation, or at least separated by `/compact`.
-
-### 6. Don't ask Claude to explain everything
-
-If you want to learn, ask. But if you just want the code to work, saying "don't explain, just implement" saves tokens on explanations you might not read.
+Skip everything else until you genuinely need it.
 
 ---
 
-## What the CLAUDE.md File Does
+## Prompt quality examples
 
-The CLAUDE.md file in your project root is the most important file for Claude Code. It tells Claude:
+The single biggest factor in cost and result quality is your prompt.
 
-- What your project is about
-- What technologies you use
-- What rules to follow
-- When to stop and ask you
+### 1. Building something
 
-**Your friends who can't code well should pay special attention to the "Budget Guard" section in CLAUDE.md:**
+| Bad | Better |
+|-----|--------|
+| `make a login page` | `Add a login page to @src/pages/. Use the form pattern from @src/pages/signup.tsx. Submit to /api/auth/login and redirect to /dashboard on success.` |
 
-```markdown
-## Budget Guard
-- Before starting any task, estimate the number of files to touch.
-  If more than 10, confirm with the user.
-- If stuck on the same error for 3 iterations, STOP and explain
-  what you tried and what the blocker is.
-```
+Why: Bad version = Claude invents a new pattern. Better version = Claude reuses
+your existing code and you get something consistent.
 
-This prevents Claude from spinning its wheels on a problem it can't solve — which is the #1 source of wasted tokens for beginners.
+### 2. Fixing a bug
 
-**You can add a "User Context" section to tell Claude about your experience level:**
+| Bad | Better |
+|-----|--------|
+| `fix the error` | `In @server.py the /upload endpoint returns 500 when the file is over 10MB. Should return 413 with a clear error message instead.` |
 
-```markdown
-## User Context
-I am learning to program. When you encounter errors:
-- Explain what went wrong in simple terms
-- Show me what you changed and why
-- If something is too complex, suggest a simpler approach first
-```
+Why: Bad version = Claude runs the code blindly looking for any error. Better
+version = Claude knows exactly which file, which symptom, which behavior you want.
 
----
+### 3. Adding a feature
 
-## Common Mistakes to Avoid
+| Bad | Better |
+|-----|--------|
+| `add search` | `Add a search box to @src/components/ProductList.tsx that filters products by name as the user types. Case-insensitive, debounce 300ms.` |
 
-### Mistake: Saying "yes" to everything Claude suggests
+Why: "add search" could mean ten different things. The good prompt is unambiguous.
 
-Sometimes Claude proposes adding extra features, refactoring, or "improving" things you didn't ask for. This costs tokens and introduces bugs.
+### 4. Asking a question
 
-**Fix:** Say "no, just do what I asked."
+| Bad | Better |
+|-----|--------|
+| `why doesnt this work` | `In @src/api/auth.py line 42, why does verify_token() return None for valid tokens? Test that fails: @tests/test_auth.py::test_valid_token` |
 
-### Mistake: Not reading error messages
+Why: Including the file paths means Claude reads the actual code instead of
+inventing a possible explanation.
 
-When something fails, read what Claude says about the error before asking it to "fix it." If you just say "fix it," Claude will guess — and might make it worse.
+### 5. Refactoring
 
-**Fix:** Read the error, then tell Claude what you think is wrong.
+| Bad | Better |
+|-----|--------|
+| `clean up this code` | `In @src/utils/format.ts, the formatCurrency function is duplicated in three places. Extract it to one place and update the callers.` |
 
-### Mistake: Asking Claude to do too much at once
-
-"Build me an entire e-shop" will produce a mess that's hard to debug. Claude works best on focused, well-defined tasks.
-
-**Fix:** Break it into pieces: "Create the product model," then "Create the product listing page," then "Add the shopping cart."
-
-### Mistake: Not using /compact
-
-After 30+ messages, Claude's context is bloated. Responses get slower, more expensive, and less accurate.
-
-**Fix:** `/compact` after finishing each task. Start fresh.
-
-### Mistake: Fighting Claude on errors it can't fix
-
-If Claude fails 3 times on the same error, there's usually a reason it can't solve it alone (missing dependency, environment issue, wrong assumption about your setup).
-
-**Fix:** Read the error yourself. Search for it online. Give Claude the specific information it's missing.
+Why: "clean up" is subjective. The good prompt has one specific outcome you can verify.
 
 ---
 
-## Quick Reference Card
+## Best workflow practices
+
+### A typical task, start to finish
 
 ```
-BEFORE CODING:    /plan "what to build"
-WHILE CODING:     Let Claude work — it uses /tdd and agents automatically
-AFTER CODING:     /code-review
-BEFORE COMMIT:    /verify
-BETWEEN TASKS:    /compact
-NEW PROJECT:      /init <type>
-BUILD BROKEN:     /build-fix
+1. /plan "what you want"           # Claude shows a plan
+2. read the plan                   # if wrong, say what's wrong; don't approve blindly
+3. "go ahead"                      # Claude writes the code
+4. /code-review                    # catches bugs before they land
+5. /verify                         # runs build, tests, lint
+6. git commit                      # small, descriptive
+7. /compact                        # before starting the next thing
 ```
 
-When in doubt: describe what you want as specifically as possible, and let Claude figure out the implementation.
+### Commit often, in small pieces
+
+After every working feature, commit. If you batch a day's work into one commit
+and something breaks at the end, you cannot undo selectively — you lose
+everything. Five small commits are recoverable; one giant commit is not.
+
+### Read what Claude changes as it works
+
+Claude shows each file edit. Skim them. If something looks wrong (new file you
+didn't ask for, dependency you don't recognize, line you don't understand),
+stop it with `Esc` and ask. Don't save problems for the `/code-review` step —
+catching them earlier costs less.
+
+### One thing at a time
+
+Resist "while you're at it, also do X." Each session should be one feature or
+one bug. If you mix tasks, the diff is too messy to review and you can't tell
+which change broke which thing.
+
+### When to stop and step in
+
+Stop letting Claude work and step in yourself when:
+- It has tried the same fix two or three times
+- The plan is much bigger than you expected (5+ files when you wanted 1)
+- It is creating new files you didn't ask for
+- The error message means nothing to you — read it, search it, then come back
+
+### When you don't understand something
+
+Ask. "Explain what this function does in plain English" is a valid prompt.
+Don't accept code you can't read — eventually it will break and you won't be
+able to fix it.
 
 ---
 
-# Pruvodce pro zacatecniky (CZ)
+## Three things that waste your money
 
-Tento pruvodce je pro lidi, kteri jsou novi v programovani nebo v Claude Code. Nauci vas efektivne pracovat s Claudem a neutraci zbytecne za tokeny.
+1. **Letting Claude grind on the same error.** If it fails twice, stop and read the
+   error yourself. Tell Claude what you actually see. Don't say "try again."
 
----
+2. **Carrying old context between unrelated tasks.** When you switch topics, run
+   `/compact`. Otherwise every prompt re-bills the whole previous conversation.
 
-## Co je Claude Code?
-
-Claude Code je AI programator, ktery zije ve vasem terminalu. Popisete, co chcete, a on napise kod za vas. Ale jako kazdy nastroj — kvalita vysledku zalezi na tom, jak ho pouzivate.
-
-Tato konfigurace zpusobi, ze Claude:
-- Planuje pred kodovanim (mene chyb)
-- Pise testy pred kodem (odchyti bugy vcas)
-- Kontroluje svuj vlastni kod (odchyti problemy pred ulozenim)
-- Zastavi se a zepta se, kdyz si neni jisty (zadne tiche spatne odbocky)
+3. **Vague prompts.** "Make it better" costs the same to send as a specific prompt
+   but produces wrong code that costs 10x more to fix.
 
 ---
 
-## Tri zlata pravidla
+# Cheatsheet pro zacatecniky (CZ)
 
-### 1. Vzdy nejdriv naplanuj
-
-Pred tim, nez Clauda pozadas o cokoliv, napis:
-
-```
-/plan "co chces vytvorit"
-```
-
-Claude vytvori plan krok za krokem a ukaze ti ho. Precti si ho. Pokud zni spravne, rekni "pokracuj." Pokud ne, rekni co je spatne.
-
-**Proc na tom zalezi:** Bez planu muze Claude postavit spatnou vec. Opravit spatnou implementaci stoji 10x vic tokenu nez opravit spatny plan.
-
-### 2. Zkontroluj pred ulozenim
-
-Pote co Claude dopise kod, napis:
-
-```
-/code-review
-```
-
-Toto zkontroluje bugy, bezpecnostni problemy a kvalitu kodu. Berte to jako druhy par oci.
-
-### 3. Vycisti kontext mezi ukoly
-
-Kdyz dokoncis jeden ukol a chces zacit jiny, napis:
-
-```
-/compact
-```
-
-Toto uvolni Claudovu pamet, aby se mohl soustredil na novy ukol. Bez toho Claude nosi stary kontext, coz ho dela pomalejsim, drazsi a vice zmatenym.
+Pro lidi novych v programovani nebo v Claude Code. Precti si jednou, vrat se kdyz potrebujes.
 
 ---
 
-## Jak psat dobre prompty
+## Prvni pouziti v projektu
 
-Vas prompt je nejdulezitejsi faktor pro ziskani dobrych vysledku.
-
-### Spatne prompty (mrha tokeny, spatne vysledky)
-
-```
-udelej web
-```
-
-```
-oprav to
-```
-
-Toto je prilis vague. Claude musi hadat co chcete, a uhadne spatne.
-
-### Dobre prompty (usetri tokeny, spravne vysledky)
-
-```
-Vytvor React komponentu ProductList, ktera:
-- Bere pole produktu (nazev, cena, image_url)
-- Zobrazuje je v responsivni mrizce (3 sloupce na desktopu, 1 na mobilu)
-- Kazda karta produktu ma nazev, cenu v CZK a obrazek
-- Kliknuti na kartu otevre detail na /product/[id]
-```
-
-**Vzorec:** Reknete Claudovi CO chcete, KDE to ma byt a JAK to ma fungovat.
-
----
-
-## Vase prvni nastaveni projektu
-
-### Krok 1: Nainstaluj konfiguraci
-
-```bash
-bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
-```
-
-Restartuj Claude Code po instalaci.
-
-### Krok 2: Zaloz novy projekt
-
-```bash
-mkdir muj-projekt
-cd muj-projekt
-```
-
-Pak v Claude Code:
-
-```
-/init eshop
-```
-
-Toto vytvori soubor CLAUDE.md se spravnym nastavenim pro tvuj typ projektu.
-
-### Krok 3: Otevri CLAUDE.md
-
-Soubor CLAUDE.md rika Claudovi o tvem projektu. Otevri ho a vyplni `[TODO]` sekce. Pokud si nejsi jisty, staci popsat co projekt dela ve 2-3 vetach.
-
-### Krok 4: Nastav svoji uroven
-
-V Claude Code napis:
+Napis jeden prikaz:
 
 ```
 /switch-tier beginner
 ```
 
-Toto nastavi Clauda aby mluvil jednoduse a ptal se pred kazdou akci.
-
-### Krok 5: Zacni stavet
-
-```
-/plan "vytvor stranku se seznamem produktu z databaze"
-```
-
-Precti plan. Pokud vypada dobre, rekni "pokracuj."
+Vytvori `CLAUDE.md` a zapne snadny rezim (jednoduchy jazyk, pta se pred akci).
+To je cele nastaveni.
 
 ---
 
-## Prehled prikazu
+## Ctyri veci o chatu, co musis vedet
 
-Nemusis si vsechny pamatovat. Zacni s temito tremi:
+| Symbol | Co dela | Priklad |
+|--------|---------|---------|
+| `@` | Odkaz na soubor nebo slozku | `Precti @src/auth.py a vysvetli co dela` |
+| `!` | Spusti shell prikaz | `! ls` nebo `! npm install` |
+| `/` | Spusti Claude prikaz | `/plan`, `/code-review` |
+| `Esc` | Prerusi Clauda behem odpovedi | Stiskni kdyz Claude jde spatne |
 
-| Prikaz | Kdy ho pouzit | Co dela |
-|--------|---------------|---------|
-| `/plan` | Pred stavenim cehokoliv | Vytvori plan ke schvaleni |
-| `/code-review` | Po napsani kodu | Zkontroluje bugy a problemy |
-| `/verify` | Pred ulozenim kodu | Spusti vsechny testy a kontroly |
-
-Az budes pohodlnejsi, pridej tyto:
-
-| Prikaz | Kdy ho pouzit | Co dela |
-|--------|---------------|---------|
-| `/tdd` | Pri staveni nove funkce | Napise nejdriv testy, pak kod |
-| `/build-fix` | Kdyz se kod neskompiluje | Opravi chyby buildu |
-| `/compact` | Mezi ruznymi ukoly | Uvolni kontext, setri tokeny |
-| `/init` | Zakladani noveho projektu | Vytvori konfiguracni soubory |
-| `/switch-tier` | Zmena urovne obtiznosti | Prepne beginner/intermediate/advanced |
+Pouzivej `@` neustale. Je to nejvetsi rozdil mezi vague prompty a presnymi —
+Claude precte presne ten soubor, na ktery ukazes, misto aby hadal.
 
 ---
 
-## Jak setrit tokeny
+## Pet prikazu, ktere se vyplati
 
-Tokeny = jednotky, za ktere Claude uctuje. Vic tokenu = drazsi. Tak minimalizujte plytvas:
+| Prikaz | Kdy ho pouzit |
+|--------|---------------|
+| `/plan "co chces udelat"` | Pred kazdym vetsim ukolem. Claude ukaze plan, ty schvalis. |
+| `/code-review` | Po napsani kodu. Odhali bugy pred commitnutim. |
+| `/verify` | Pred commitem. Spusti build + testy + lint + typecheck. |
+| `/compact` | Mezi ruznymi ukoly. Uvolni pamet, setri penize. |
+| `/switch-tier <uroven>` | Zmena rezimu (beginner / intermediate / advanced). |
 
-### 1. Bud konkretni (usetri 30-50%)
-
-Pokazde kdyz Claude uhadne spatne a musi predela, platite za oba pokusy.
-
-### 2. Pouzivej /plan (usetri 30-60%)
-
-Spatna implementace stoji 5000-20000 tokenu na opravu. Spatny plan stoji 500 tokenu na opravu.
-
-### 3. Pouzivej /compact (usetri 10-20%)
-
-Stary kontext zdrazuje kazdy prompt. Vycisti ho mezi ukoly.
-
-### 4. Nebojuj s chybovymi smyckami
-
-Pokud Claude zkusi opravit stejnou chybu 3x a selze, zastavi se. To je zamerne.
-
-Kdyz se to stane:
-- Precti si chybovou zpravu sam
-- Vygoogluj ji pokud je treba
-- Rekni Claudovi konkretne, co si myslis ze je problem
-
-### 5. Jeden ukol najednou
-
-Nerikej "oprav login bug a taky pridej vyhledavani a taky aktualizuj navbar." Kazdy ukol zvlast, nebo aspon oddelen `/compact`.
+Vse ostatni preskakuj dokud to opravdu nepotrebujes.
 
 ---
 
-## Casete chyby, kterym se vyhnout
+## Priklady kvality promptu
 
-### Chyba: Rikat "ano" na vsechno co Claude navrhe
+Tvuj prompt je nejvetsi faktor pro cenu i kvalitu vysledku.
 
-Nekdy Claude navrhe pridani extra funkci nebo "vylepseni" veci, o ktere jste nezadali. To stoji tokeny a pridava bugy.
+### 1. Stavet neco
 
-**Reseni:** Reknete "ne, udelej jen to o co jsem te zadal."
+| Spatne | Lepe |
+|--------|------|
+| `udelej prihlasovaci stranku` | `Pridej prihlasovaci stranku do @src/pages/. Pouzij vzor z @src/pages/signup.tsx. Odesilej na /api/auth/login a po uspechu presmeruj na /dashboard.` |
 
-### Chyba: Necist chybove zpravy
+Proc: Spatna verze = Claude vymysli novy vzor. Lepsi verze = Claude pouzije
+existujici kod a vysledek je konzistentni.
 
-Kdyz neco selze, prectete si co Claude rika o chybe nez mu reknete "oprav to." Pokud jen reknete "oprav to," Claude bude hadat.
+### 2. Opravit bug
 
-**Reseni:** Prectete chybu, pak reknete Claudovi co si myslite ze je spatne.
+| Spatne | Lepe |
+|--------|------|
+| `oprav tu chybu` | `V @server.py endpoint /upload vraci 500 kdyz je soubor vetsi nez 10MB. Mel by vracet 413 s jasnou chybovou zpravou.` |
 
-### Chyba: Zadat Claudovi prilis mnoho najednou
+Proc: Spatna verze = Claude bezi kod naslepo a hleda jakoukoli chybu. Lepsi
+verze = Claude vi presne ktery soubor, ktery symptom, jake chovani chces.
 
-"Postav mi cely e-shop" vytvori neporadek, ktery se tezko ladl. Claude pracuje nejlepe na soustredenych, dobre definovanych ukolech.
+### 3. Pridat feature
 
-**Reseni:** Rozdelit na kousky: "Vytvor model produktu," pak "Vytvor stranku se seznamem produktu," pak "Pridej nakupni kosik."
+| Spatne | Lepe |
+|--------|------|
+| `pridej vyhledavani` | `Pridej vyhledavaci pole do @src/components/ProductList.tsx ktere filtruje produkty podle nazvu pri psani. Case-insensitive, debounce 300ms.` |
 
-### Chyba: Nepouzivat /compact
+Proc: "Pridej vyhledavani" muze znamenat deset veci. Dobry prompt je jednoznacny.
 
-Po 30+ zpravach je Clauduv kontext nafouknty. Odpovedi jsou pomalejsi, drazsi a mene presne.
+### 4. Polozit otazku
 
-**Reseni:** `/compact` po dokonceni kazdeho ukolu.
+| Spatne | Lepe |
+|--------|------|
+| `proc to nefunguje` | `V @src/api/auth.py na radku 42, proc verify_token() vraci None pro platne tokeny? Test ktery selhava: @tests/test_auth.py::test_valid_token` |
+
+Proc: Cesty k souborum znamenaji ze Claude precte skutecny kod misto
+vymysleni mozneho vysvetleni.
+
+### 5. Refaktoring
+
+| Spatne | Lepe |
+|--------|------|
+| `vycisti tenhle kod` | `V @src/utils/format.ts je funkce formatCurrency duplikovana na trech mistech. Extrahuj ji na jedno misto a uprav volajici.` |
+
+Proc: "Vycisti" je subjektivni. Dobry prompt ma jeden konkretni vysledek, ktery jde overit.
 
 ---
 
-## Rychly prehled
+## Nejlepsi workflow praktiky
+
+### Typicky ukol od zacatku do konce
 
 ```
-PRED KODOVANIM:   /plan "co chces stavet"
-BEHEM KODOVANI:   Nech Clauda pracovat — pouziva /tdd a agenty automaticky
-PO KODOVANI:      /code-review
-PRED ULOZENM:     /verify
-MEZI UKOLY:       /compact
-NOVY PROJEKT:     /init <typ>
-BUILD NEFUNGUJE:  /build-fix
-ZMENA UROVNE:     /switch-tier beginner
+1. /plan "co chces"               # Claude ukaze plan
+2. precti plan                    # kdyz je spatny, rekni co; neschvaluj naslepo
+3. "pokracuj"                     # Claude napise kod
+4. /code-review                   # odhali bugy pred ulozenim
+5. /verify                        # spusti build, testy, lint
+6. git commit                     # maly, popisny
+7. /compact                       # pred dalsi vec
 ```
 
-Pokud si nejsi jisty: popis co chces co nejkonkretneji a nech Clauda at vymysli implementaci.
+### Commituj casto, v malych kouscich
+
+Po kazde funkcni feature commitni. Kdyz nashromazdi cely den prace do jednoho
+commitu a na konci se neco rozbije, nemuzes vratit jen cast — ztratis vsechno.
+Pet malych commitu jde zachranit; jeden velky ne.
+
+### Sleduj co Claude meni behem prace
+
+Claude ukazuje kazdou editaci souboru. Projdi je. Kdyz neco vypada spatne
+(novy soubor o ktery jsi nezadal, neznama dependence, radka kterou nechapes),
+zastav ho pomoci `Esc` a zeptej se. Neukladej problemy az do `/code-review` —
+chytit je drive je levnejsi.
+
+### Jedna vec najednou
+
+Odolavej "kdyz uz jsi u toho, taky udelej X." Kazda session by mela byt jedna
+feature nebo jeden bug. Kdyz michas ukoly, diff je neprehledny a nepoznas,
+ktera zmena rozbila co.
+
+### Kdy zasahnout
+
+Prestan nechat Clauda pracovat a zasahnete sami kdyz:
+- Zkusil stejnou opravu dvakrat nebo trikrat
+- Plan je mnohem vetsi nez jsi cekal (5+ souboru kdyz jsi chtel 1)
+- Vytvari nove soubory o ktere jsi nezadal
+- Chybove zprave nerozumis — precti ji, najdi si ji, vrat se
+
+### Kdyz necemu nerozumis
+
+Zeptej se. "Vysvetli co tato funkce dela jednoduse" je platny prompt.
+Neakceptuj kod, ktery neumis precist — drive nebo pozdeji se rozbije a
+neopravis ho.
+
+---
+
+## Tri veci, ktere tahaji tvoje penize
+
+1. **Necht Clauda mlatit do stejne chyby.** Kdyz selze dvakrat, zastav se a precti
+   chybu sam. Rekni Claudovi co konkretne vidis. Nerikej "zkus znovu."
+
+2. **Tahat stary kontext mezi nesouvisejicimi ukoly.** Kdyz menis tema, spust
+   `/compact`. Jinak kazdy prompt znovu uctuje celou predchozi konverzaci.
+
+3. **Vague prompty.** "Udelej to lip" stoji stejne k odeslani jako konkretni prompt,
+   ale vyplodi spatny kod, jehoz oprava stoji 10x vic.
