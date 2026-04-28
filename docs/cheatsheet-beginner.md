@@ -135,19 +135,27 @@ mkdir my-project
 cd my-project
 ```
 
-Then in Claude Code:
+The setup script already created a base `CLAUDE.md` in this folder. If you want a template for a specific project type, run in Claude Code:
 
 ```
 /init eshop
 ```
 
-This creates a CLAUDE.md file with the right settings for your project type.
-
 ### Step 3: Open CLAUDE.md and fill in the basics
 
 The CLAUDE.md file tells Claude about your project. Open it and fill in the `[TODO]` sections. If you're not sure, just describe what the project does in 2-3 sentences — that's enough to start.
 
-### Step 4: Start building
+### Step 4: Set your skill level
+
+In Claude Code, type:
+
+```
+/switch-tier beginner
+```
+
+This tells Claude to use simple language and ask before every action. You can also choose `intermediate` or `advanced` later as you get more comfortable.
+
+### Step 5: Start building
 
 ```
 /plan "create a product listing page that shows products from the database"
@@ -309,7 +317,7 @@ Claude Code je AI programator, ktery zije ve vasem terminalu. Popisete, co chcet
 Tato konfigurace zpusobi, ze Claude:
 - Planuje pred kodovanim (mene chyb)
 - Pise testy pred kodem (odchyti bugy vcas)
-- Kontroluje svuj vlastni kod (odchyti problemy pred ulozenm)
+- Kontroluje svuj vlastni kod (odchyti problemy pred ulozenim)
 - Zastavi se a zepta se, kdyz si neni jisty (zadne tiche spatne odbocky)
 
 ---
@@ -328,7 +336,7 @@ Claude vytvori plan krok za krokem a ukaze ti ho. Precti si ho. Pokud zni spravn
 
 **Proc na tom zalezi:** Bez planu muze Claude postavit spatnou vec. Opravit spatnou implementaci stoji 10x vic tokenu nez opravit spatny plan.
 
-### 2. Zkontroluj pred ulozenm
+### 2. Zkontroluj pred ulozenim
 
 Pote co Claude dopise kod, napis:
 
@@ -437,7 +445,7 @@ Nemusis si vsechny pamatovat. Zacni s temito tremi:
 |--------|---------------|---------|
 | `/plan` | Pred stavenim cehokoliv | Vytvori plan ke schvaleni |
 | `/code-review` | Po napsani kodu | Zkontroluje bugy a problemy |
-| `/verify` | Pred ulozenm kodu | Spusti vsechny testy a kontroly |
+| `/verify` | Pred ulozenim kodu | Spusti vsechny testy a kontroly |
 
 Az budes pohodlnejsi, pridej tyto:
 

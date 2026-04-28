@@ -229,6 +229,8 @@ else
     cp "$WORK_DIR/templates/CLAUDE.md" "./CLAUDE.md"
     echo "  Created CLAUDE.md from base template (beginner mode by default)"
     echo "  Use /switch-tier in Claude Code to change your skill level"
+  else
+    echo "  CLAUDE.md already exists. Skipping base template."
   fi
 fi
 

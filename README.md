@@ -106,7 +106,7 @@ Or use the base template and fill in the `[TODO]` sections.
 
 - **No complex hooks system** — bash-only, opt-in
 - **No Node.js dependency** — works without npm
-- **No 80+ commands** — 8 that matter
+- **No 80+ commands** — 9 that matter
 - **No 48 agents** — 9 that cover real needs
 - **No continuous learning / instincts** — too advanced for beginners
 - **No governance / enterprise features** — unnecessary complexity
@@ -183,43 +183,40 @@ MIT
 
 # claude-configuration (CZ)
 
-Přenositelná konfigurace Claude Code pro vývojové týmy. Vybrané z [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) — zaměřené na to, co skutečně pomáhá.
+Prenositelna konfigurace Claude Code pro vyvojove tymy. Vybrane z [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) — zamerene na to, co skutecne pomaha.
 
-## Rychlá instalace
+## Rychla instalace
 
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
 ```
 
-## Tři příkazy, které mění výsledek
+## Tri prikazy, ktere meni vysledek
 
 ```
-/plan "co chceš udělat"     # Naplánuj před kódováním
-/code-review                # Zkontroluj po dokončení
-/verify                     # Spusť všechny kontroly před commitem
+/plan "co chces udelat"     # Naplanuj pred kodovanim
+/code-review                # Zkontroluj po dokonceni
+/verify                     # Spust vsechny kontroly pred commitem
 ```
 
-Mezi nesouvisejícími úkoly: `/compact` (uvolní kontext, šetří tokeny).
+Mezi nesouvisejicimi ukoly: `/compact` (uvolni kontext, setri tokeny).
 
-## Možnosti instalace
+## Moznosti instalace
 
 ```bash
-bash setup.sh                              # Základ: pravidla + agenti + příkazy
-bash setup.sh --full                       # Vše: + skills, hooks, MCP
-bash setup.sh --with-hooks                 # Základ + hooks
-bash setup.sh --project eshop              # Základ + CLAUDE.md šablona
+bash setup.sh                              # Zaklad: pravidla + agenti + prikazy
+bash setup.sh --full                       # Vse: + skills, hooks, MCP
+bash setup.sh --with-hooks                 # Zaklad + hooks
+bash setup.sh --project eshop              # Zaklad + CLAUDE.md sablona
 ```
 
-Typy projektů: `real-estate`, `song-gift`, `eshop`, `defi`
+Typy projektu: `real-estate`, `song-gift`, `eshop`, `defi`
 
 Po instalaci restartuj Claude Code.
 
-## Dokumentace
+## Urovne dovednosti
 
-- [Cheatsheet pro pokročilé](docs/cheatsheet-advanced.md) — kompletní reference všech příkazů, pravidel, agentů
-- [Průvodce pro začátečníky](docs/cheatsheet-beginner.md) — jak psát dobré prompty, šetřit tokeny, vyhnout se chybám
-
-**Pro zacatecniky:** Vsechny CLAUDE.md sablony jsou ve vychozim nastaveni v BEGINNER modu. Pro prepnuti napis `/switch-tier` v Claude Code.
+Vsechny CLAUDE.md sablony jsou ve vychozim nastaveni v BEGINNER modu. Pro prepnuti napis `/switch-tier` v Claude Code.
 
 | Uroven | Pro koho | Chovani |
 |--------|----------|---------|

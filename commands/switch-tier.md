@@ -25,3 +25,11 @@ If no tier is specified or the value is not recognized, ask the user which tier 
 beginner, intermediate, or advanced.
 
 Only ONE tier should be active at a time.
+
+Edge cases:
+- If CLAUDE.md does not exist in the project root, inform the user and suggest
+  running the setup script or `/init` to create one.
+- If CLAUDE.md exists but has no tier markers (no `<!-- BEGINNER START`,
+  `<!-- INTERMEDIATE START`, or `<!-- ADVANCED START`), inform the user that
+  their CLAUDE.md does not use the tier system and suggest recreating it
+  with `/init`.

@@ -111,6 +111,18 @@ Finds unused functions, variables, imports, and safely removes them.
 
 Creates CLAUDE.md, .gitignore, and .env.example in the current directory.
 
+### /switch-tier — Switch skill level
+
+**When:** Changing how Claude communicates and enforces workflow rules.
+
+```
+/switch-tier beginner        # Plain language, asks before acting, no TDD
+/switch-tier intermediate    # Concise but clear, moderate autonomy
+/switch-tier advanced        # Terse, fully autonomous, full workflow
+```
+
+Edits the `CLAUDE.md` in your project root — swaps the active tier by toggling comment markers. Defaults to BEGINNER on fresh installs.
+
 ---
 
 ## Rules Reference
