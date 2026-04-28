@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(wc *)",
+      "Bash(npm test *)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(pytest *)",
+      "Bash(ruff *)",
+      "Bash(mypy *)",
+      "Bash(python -m *)",
+      "Bash(uv *)",
+      "Bash(pip *)",
+      "Bash(forge test *)",
+      "Bash(forge build *)",
+      "Bash(forge coverage *)"
+    ]
+  }
+}

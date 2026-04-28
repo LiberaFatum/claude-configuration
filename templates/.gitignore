@@ -1,0 +1,59 @@
+# Environment and secrets
+.env
+.env.local
+.env.production
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Node.js
+node_modules/
+.next/
+.nuxt/
+.output/
+.vercel/
+
+# Solidity / Foundry
+cache/
+out/
+broadcast/
+artifacts/
+typechain-types/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test artifacts
+coverage/
+test-results/
+playwright-report/
