@@ -48,65 +48,69 @@ Skip everything else until you genuinely need it.
 ## Prompt quality examples
 
 The single biggest factor in cost and result quality is your prompt.
+You don't need to know how to code — just describe clearly what you see and what you want.
 
 ### 1. Building something
 
 | Bad | Better |
 |-----|--------|
-| `make a login page` | `Add a login page to @src/pages/. Use the form pattern from @src/pages/signup.tsx. Submit to /api/auth/login and redirect to /dashboard on success.` |
+| `make a login page` | `I want a login page where users type their email and password. It should look like the signup page I already have. After logging in, go to the main page.` |
 
-Why: Bad version = Claude invents a new pattern. Better version = Claude reuses
-your existing code and you get something consistent.
+Why: The bad version gives Claude no direction — it invents everything from scratch.
+The better version describes what the page should do and how it should look.
 
 ### 2. Fixing a bug
 
 | Bad | Better |
 |-----|--------|
-| `fix the error` | `In @server.py the /upload endpoint returns 500 when the file is over 10MB. Should return 413 with a clear error message instead.` |
+| `fix the error` | `When I upload a file bigger than 10 MB, I get an error page instead of a message. I want it to say "File too large" instead of crashing.` |
 
-Why: Bad version = Claude runs the code blindly looking for any error. Better
-version = Claude knows exactly which file, which symptom, which behavior you want.
+Why: The bad version makes Claude guess which error you mean. The better version
+describes what happens, when it happens, and what you want instead.
 
 ### 3. Adding a feature
 
 | Bad | Better |
 |-----|--------|
-| `add search` | `Add a search box to @src/components/ProductList.tsx that filters products by name as the user types. Case-insensitive, debounce 300ms.` |
+| `add search` | `I want a search box on the product list page. When I type a name, the list should show only matching products. It shouldn't matter if I use uppercase or lowercase.` |
 
-Why: "add search" could mean ten different things. The good prompt is unambiguous.
+Why: "Add search" could mean ten different things. The better version describes
+the exact behavior so there's nothing to guess.
 
 ### 4. Asking a question
 
 | Bad | Better |
 |-----|--------|
-| `why doesnt this work` | `In @src/api/auth.py line 42, why does verify_token() return None for valid tokens? Test that fails: @tests/test_auth.py::test_valid_token` |
+| `why doesnt this work` | `The login stopped working — it says the token is invalid even when I log in with the right password. Can you check why?` |
 
-Why: Including the file paths means Claude reads the actual code instead of
-inventing a possible explanation.
+Why: "Why doesn't this work" gives Claude nothing to go on. The better version
+describes the symptom, so Claude can find the cause.
 
-### 5. Refactoring
+### 5. Changing existing code
 
 | Bad | Better |
 |-----|--------|
-| `clean up this code` | `In @src/utils/format.ts, the formatCurrency function is duplicated in three places. Extract it to one place and update the callers.` |
+| `clean up this code` | `I noticed the price formatting looks the same in several places. Can you put it in one place so I only have to change it once?` |
 
-Why: "clean up" is subjective. The good prompt has one specific outcome you can verify.
+Why: "Clean up" is subjective. The better version describes one specific thing
+with a clear outcome you can check.
 
 ---
 
 ## Best workflow practices
 
-### A typical task, start to finish
+### How to work with Claude
 
 ```
-1. /plan "what you want"           # Claude shows a plan
-2. read the plan                   # if wrong, say what's wrong; don't approve blindly
-3. "go ahead"                      # Claude writes the code
-4. /code-review                    # catches bugs before they land
-5. /verify                         # runs build, tests, lint
-6. git commit                      # small, descriptive
-7. /compact                        # before starting the next thing
+1. Describe what you want                # in plain language
+2. Read Claude's plan                    # if something is wrong, say what
+3. Say "go ahead"                        # Claude writes the code
+4. Look at what changed                  # skim the edits, ask if anything is unclear
+5. Ask Claude to save your work          # "commit this"
 ```
+
+That's it. As you get comfortable, you can add `/code-review` after step 3
+and `/verify` before step 5 — but don't worry about them right away.
 
 ### Commit often, in small pieces
 
@@ -156,158 +160,162 @@ able to fix it.
 
 ---
 
-# Cheatsheet pro zacatecniky (CZ)
+# Cheatsheet pro začátečníky (CZ)
 
-Pro lidi novych v programovani nebo v Claude Code. Precti si jednou, vrat se kdyz potrebujes.
+Pro lidi nové v programování nebo v Claude Code. Přečti si jednou, vrať se když potřebuješ.
 
 ---
 
-## Prvni pouziti v projektu
+## První použití v projektu
 
-Napis jeden prikaz:
+Napiš jeden příkaz:
 
 ```
 /switch-tier beginner
 ```
 
-Vytvori `CLAUDE.md` a zapne snadny rezim (jednoduchy jazyk, pta se pred akci).
-To je cele nastaveni.
+Vytvoří `CLAUDE.md` a zapne snadný režim (jednoduchý jazyk, ptá se před akcí).
+To je celé nastavení.
 
 ---
 
-## Ctyri veci o chatu, co musis vedet
+## Čtyři věci o chatu, co musíš vědět
 
-| Symbol | Co dela | Priklad |
+| Symbol | Co dělá | Příklad |
 |--------|---------|---------|
-| `@` | Odkaz na soubor nebo slozku | `Precti @src/auth.py a vysvetli co dela` |
-| `!` | Spusti shell prikaz | `! ls` nebo `! npm install` |
-| `/` | Spusti Claude prikaz | `/plan`, `/code-review` |
-| `Esc` | Prerusi Clauda behem odpovedi | Stiskni kdyz Claude jde spatne |
+| `@` | Odkaz na soubor nebo složku | `Přečti @src/auth.py a vysvětli co dělá` |
+| `!` | Spustí shell příkaz | `! ls` nebo `! npm install` |
+| `/` | Spustí Claude příkaz | `/plan`, `/code-review` |
+| `Esc` | Přeruší Clauda během odpovědi | Stiskni když Claude jde špatně |
 
-Pouzivej `@` neustale. Je to nejvetsi rozdil mezi vague prompty a presnymi —
-Claude precte presne ten soubor, na ktery ukazes, misto aby hadal.
+Používej `@` neustále. Je to největší rozdíl mezi vágními prompty a přesnými —
+Claude přečte přesně ten soubor, na který ukážeš, místo aby hádal.
 
 ---
 
-## Pet prikazu, ktere se vyplati
+## Pět příkazů, které se vyplatí
 
-| Prikaz | Kdy ho pouzit |
+| Příkaz | Kdy ho použít |
 |--------|---------------|
-| `/plan "co chces udelat"` | Pred kazdym vetsim ukolem. Claude ukaze plan, ty schvalis. |
-| `/code-review` | Po napsani kodu. Odhali bugy pred commitnutim. |
-| `/verify` | Pred commitem. Spusti build + testy + lint + typecheck. |
-| `/compact` | Mezi ruznymi ukoly. Uvolni pamet, setri penize. |
-| `/switch-tier <uroven>` | Zmena rezimu (beginner / intermediate / advanced). |
+| `/plan "co chceš udělat"` | Před každým větším úkolem. Claude ukáže plán, ty schválíš. |
+| `/code-review` | Po napsání kódu. Odhalí bugy před commitnutím. |
+| `/verify` | Před commitem. Spustí build + testy + lint + typecheck. |
+| `/compact` | Mezi různými úkoly. Uvolní paměť, šetří peníze. |
+| `/switch-tier <úroveň>` | Změna režimu (beginner / intermediate / advanced). |
 
-Vse ostatni preskakuj dokud to opravdu nepotrebujes.
+Vše ostatní přeskakuj dokud to opravdu nepotřebuješ.
 
 ---
 
-## Priklady kvality promptu
+## Příklady kvality promptů
 
-Tvuj prompt je nejvetsi faktor pro cenu i kvalitu vysledku.
+Tvůj prompt je největší faktor pro cenu i kvalitu výsledku.
+Nemusíš umět programovat — stačí jasně popsat co vidíš a co chceš.
 
-### 1. Stavet neco
+### 1. Stavět něco
 
-| Spatne | Lepe |
+| Špatně | Lépe |
 |--------|------|
-| `udelej prihlasovaci stranku` | `Pridej prihlasovaci stranku do @src/pages/. Pouzij vzor z @src/pages/signup.tsx. Odesilej na /api/auth/login a po uspechu presmeruj na /dashboard.` |
+| `udělej přihlašovací stránku` | `Chci přihlašovací stránku, kde uživatel zadá email a heslo. Měla by vypadat jako ta registrační, co už mám. Po přihlášení přejít na hlavní stránku.` |
 
-Proc: Spatna verze = Claude vymysli novy vzor. Lepsi verze = Claude pouzije
-existujici kod a vysledek je konzistentni.
+Proč: Špatná verze nedává Claudovi žádný směr — vymyslí všechno od nuly.
+Lepší verze popisuje co má stránka dělat a jak má vypadat.
 
 ### 2. Opravit bug
 
-| Spatne | Lepe |
+| Špatně | Lépe |
 |--------|------|
-| `oprav tu chybu` | `V @server.py endpoint /upload vraci 500 kdyz je soubor vetsi nez 10MB. Mel by vracet 413 s jasnou chybovou zpravou.` |
+| `oprav tu chybu` | `Když nahraju soubor větší než 10 MB, místo zprávy se ukáže chybová stránka. Chci aby se zobrazilo "Soubor je příliš velký" místo pádu.` |
 
-Proc: Spatna verze = Claude bezi kod naslepo a hleda jakoukoli chybu. Lepsi
-verze = Claude vi presne ktery soubor, ktery symptom, jake chovani chces.
+Proč: Špatná verze nechá Clauda hádat kterou chybu myslíš. Lepší verze
+popisuje co se děje, kdy se to děje a co chceš místo toho.
 
-### 3. Pridat feature
+### 3. Přidat funkci
 
-| Spatne | Lepe |
+| Špatně | Lépe |
 |--------|------|
-| `pridej vyhledavani` | `Pridej vyhledavaci pole do @src/components/ProductList.tsx ktere filtruje produkty podle nazvu pri psani. Case-insensitive, debounce 300ms.` |
+| `přidej vyhledávání` | `Chci vyhledávací pole na stránce se seznamem produktů. Když začnu psát název, seznam ukáže jen odpovídající produkty. Nezáleží na velkých a malých písmenech.` |
 
-Proc: "Pridej vyhledavani" muze znamenat deset veci. Dobry prompt je jednoznacny.
+Proč: "Přidej vyhledávání" může znamenat deset věcí. Lepší prompt popisuje
+přesné chování, takže není co hádat.
 
-### 4. Polozit otazku
+### 4. Položit otázku
 
-| Spatne | Lepe |
+| Špatně | Lépe |
 |--------|------|
-| `proc to nefunguje` | `V @src/api/auth.py na radku 42, proc verify_token() vraci None pro platne tokeny? Test ktery selhava: @tests/test_auth.py::test_valid_token` |
+| `proč to nefunguje` | `Přihlašování přestalo fungovat — píše že token je neplatný, i když zadám správné heslo. Můžeš zjistit proč?` |
 
-Proc: Cesty k souborum znamenaji ze Claude precte skutecny kod misto
-vymysleni mozneho vysvetleni.
+Proč: "Proč to nefunguje" nedává Claudovi nic, s čím by mohl pracovat. Lepší
+verze popisuje příznak, takže Claude může najít příčinu.
 
-### 5. Refaktoring
+### 5. Změnit existující kód
 
-| Spatne | Lepe |
+| Špatně | Lépe |
 |--------|------|
-| `vycisti tenhle kod` | `V @src/utils/format.ts je funkce formatCurrency duplikovana na trech mistech. Extrahuj ji na jedno misto a uprav volajici.` |
+| `vyčisti tenhle kód` | `Všiml jsem si, že formátování cen vypadá stejně na několika místech. Můžeš to dát na jedno místo, ať to nemusím měnit víckrát?` |
 
-Proc: "Vycisti" je subjektivni. Dobry prompt ma jeden konkretni vysledek, ktery jde overit.
+Proč: "Vyčisti" je subjektivní. Lepší prompt má jeden konkrétní výsledek,
+který jde ověřit.
 
 ---
 
-## Nejlepsi workflow praktiky
+## Nejlepší workflow praktiky
 
-### Typicky ukol od zacatku do konce
+### Jak pracovat s Claudem
 
 ```
-1. /plan "co chces"               # Claude ukaze plan
-2. precti plan                    # kdyz je spatny, rekni co; neschvaluj naslepo
-3. "pokracuj"                     # Claude napise kod
-4. /code-review                   # odhali bugy pred ulozenim
-5. /verify                        # spusti build, testy, lint
-6. git commit                     # maly, popisny
-7. /compact                       # pred dalsi vec
+1. Popiš co chceš                        # svými slovy
+2. Přečti si Claudův plán                 # když něco nesedí, řekni co
+3. Řekni "pokračuj"                       # Claude napíše kód
+4. Podívej se co se změnilo               # projdi editace, zeptej se na nejasnosti
+5. Řekni Claudovi ať uloží práci          # "commitni to"
 ```
 
-### Commituj casto, v malych kouscich
+To je vše. Až se budeš cítit jistěji, můžeš přidat `/code-review` po kroku 3
+a `/verify` před krokem 5 — ale ze začátku se tím netrap.
 
-Po kazde funkcni feature commitni. Kdyz nashromazdi cely den prace do jednoho
-commitu a na konci se neco rozbije, nemuzes vratit jen cast — ztratis vsechno.
-Pet malych commitu jde zachranit; jeden velky ne.
+### Commituj často, v malých kouscích
 
-### Sleduj co Claude meni behem prace
+Po každé funkční feature commitni. Když nashromáždíš celý den práce do jednoho
+commitu a na konci se něco rozbije, nemůžeš vrátit jen část — ztratíš všechno.
+Pět malých commitů jde zachránit; jeden velký ne.
 
-Claude ukazuje kazdou editaci souboru. Projdi je. Kdyz neco vypada spatne
-(novy soubor o ktery jsi nezadal, neznama dependence, radka kterou nechapes),
-zastav ho pomoci `Esc` a zeptej se. Neukladej problemy az do `/code-review` —
-chytit je drive je levnejsi.
+### Sleduj co Claude mění během práce
 
-### Jedna vec najednou
+Claude ukazuje každou editaci souboru. Projdi je. Když něco vypadá špatně
+(nový soubor o který jsi nežádal, neznámá dependence, řádka kterou nechápeš),
+zastav ho pomocí `Esc` a zeptej se. Neukládej problémy až do `/code-review` —
+chytit je dřív je levnější.
 
-Odolavej "kdyz uz jsi u toho, taky udelej X." Kazda session by mela byt jedna
-feature nebo jeden bug. Kdyz michas ukoly, diff je neprehledny a nepoznas,
-ktera zmena rozbila co.
+### Jedna věc najednou
 
-### Kdy zasahnout
+Odolávej "když už jsi u toho, taky udělej X." Každá session by měla být jedna
+feature nebo jeden bug. Když míchás úkoly, diff je nepřehledný a nepoznáš,
+která změna rozbila co.
 
-Prestan nechat Clauda pracovat a zasahnete sami kdyz:
-- Zkusil stejnou opravu dvakrat nebo trikrat
-- Plan je mnohem vetsi nez jsi cekal (5+ souboru kdyz jsi chtel 1)
-- Vytvari nove soubory o ktere jsi nezadal
-- Chybove zprave nerozumis — precti ji, najdi si ji, vrat se
+### Kdy zasáhnout
 
-### Kdyz necemu nerozumis
+Přestaň nechávat Clauda pracovat a zasáhni sám když:
+- Zkusil stejnou opravu dvakrát nebo třikrát
+- Plán je mnohem větší než jsi čekal (5+ souborů když jsi chtěl 1)
+- Vytváří nové soubory o které jsi nežádal
+- Chybové zprávě nerozumíš — přečti ji, vyhledej si ji, vrať se
 
-Zeptej se. "Vysvetli co tato funkce dela jednoduse" je platny prompt.
-Neakceptuj kod, ktery neumis precist — drive nebo pozdeji se rozbije a
-neopravis ho.
+### Když něčemu nerozumíš
+
+Zeptej se. "Vysvětli co tato funkce dělá jednodušě" je platný prompt.
+Neakceptuj kód, který neumíš přečíst — dříve nebo později se rozbije a
+neopravíš ho.
 
 ---
 
-## Tri veci, ktere tahaji tvoje penize
+## Tři věci, které tahají tvoje peníze
 
-1. **Necht Clauda mlatit do stejne chyby.** Kdyz selze dvakrat, zastav se a precti
-   chybu sam. Rekni Claudovi co konkretne vidis. Nerikej "zkus znovu."
+1. **Nechávat Clauda mlátit do stejné chyby.** Když selže dvakrát, zastav se a přečti
+   chybu sám. Řekni Claudovi co konkrétně vidíš. Neříkej "zkus znovu."
 
-2. **Tahat stary kontext mezi nesouvisejicimi ukoly.** Kdyz menis tema, spust
-   `/compact`. Jinak kazdy prompt znovu uctuje celou predchozi konverzaci.
+2. **Táhnout starý kontext mezi nesouvisejícími úkoly.** Když měníš téma, spusť
+   `/compact`. Jinak každý prompt znovu účtuje celou předchozí konverzaci.
 
-3. **Vague prompty.** "Udelej to lip" stoji stejne k odeslani jako konkretni prompt,
-   ale vyplodi spatny kod, jehoz oprava stoji 10x vic.
+3. **Vágní prompty.** "Udělej to líp" stojí stejně k odeslání jako konkrétní prompt,
+   ale vyplodí špatný kód, jehož oprava stojí 10x víc.
