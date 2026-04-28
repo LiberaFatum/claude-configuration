@@ -102,3 +102,22 @@ indexer/
 - Do not skip reentrancy guards on value-transferring functions.
 - Do not commit `.env`, `broadcast/`, `cache/`, `out/`, `node_modules/`.
 - Do not deploy contracts without a thorough review.
+
+## User Context
+
+<!-- Uncomment ONE block based on your experience level: -->
+
+<!-- BEGINNER:
+I am learning to program. When working on this project:
+- Explain what you changed and why in simple terms.
+- If you encounter an error, explain what went wrong before trying to fix it.
+- If something is too complex, suggest a simpler approach first.
+- Do not add features I did not ask for.
+-->
+
+<!-- ADVANCED:
+I am an experienced developer. Be concise:
+- Summarize what changed in 2-3 sentences.
+- If a request is ambiguous, ask one clarifying question rather than guessing.
+- If you cannot solve a problem in 3 attempts, stop and explain what you tried.
+-->

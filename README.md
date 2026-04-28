@@ -127,15 +127,42 @@ Or use the base template and fill in the `[TODO]` sections.
   settings.json   # Permissions and config
 ```
 
+## Documentation
+
+| Document | Audience | Description |
+|----------|----------|-------------|
+| [Advanced Cheatsheet](docs/cheatsheet-advanced.md) | Experienced developers | Full reference for every command, rule, agent, skill. Optimal workflow. Token savings analysis. |
+| [Beginner's Guide](docs/cheatsheet-beginner.md) | New programmers | How to write good prompts, save tokens, avoid common mistakes. Step-by-step with examples. |
+
+**For beginners:** Open `CLAUDE.md` in your project and uncomment the "BEGINNER" block in the "User Context" section. This tells Claude to explain things more clearly and suggest simpler approaches.
+
+## Safety: Existing ~/.claude Folder
+
+The installer is **additive** — it only copies files into `rules/`, `agents/`, and `commands/`. It does NOT touch:
+
+- `sessions/` (your conversation history)
+- `projects/` (project-specific data)
+- `memory/` (persistent memory)
+- `plans/` (saved plans)
+- `mcp-configs/` (your MCP server configs)
+- `.agents/` (marketplace plugins)
+
+It WILL overwrite rules, agents, and commands **with the same filenames**. If you have custom files with different names, they're safe. `settings.json` is backed up before any changes.
+
 ## Token Efficiency
 
-Rules load on **every prompt** — that's why we keep them lean (~1200 lines total). Agents, commands, and skills load on-demand and don't add to base cost.
+Rules load on **every prompt** — that's why we keep them lean (~1350 lines total). Agents, commands, and skills load on-demand and don't add to base cost.
 
-Tips for saving tokens:
-- Use `/compact` between unrelated tasks
-- Use `/plan` before complex work (prevents wrong-direction waste)
-- Use `/verify` to catch issues early (prevents fix-loop waste)
-- Keep CLAUDE.md concise — it loads on every prompt too
+| Scenario | Without config | With config + good workflow | Savings |
+|----------|---------------|---------------------------|---------|
+| Simple bug fix | ~15K tokens | ~10K tokens | ~33% |
+| Medium feature | ~80K tokens | ~45K tokens | ~44% |
+| Feature with bug loops | ~150K tokens | ~60K tokens | ~60% |
+| Wrong-direction work | ~50K tokens wasted | ~2K (plan catches it) | ~96% |
+
+The biggest savings come from `/plan` (prevents wrong-direction waste) and Budget Guard (stops bug loops after 3 attempts).
+
+See [Advanced Cheatsheet](docs/cheatsheet-advanced.md) for detailed token optimization strategies.
 
 ## Credits
 
@@ -149,33 +176,44 @@ MIT
 
 # claude-configuration (CZ)
 
-Prenositelna konfigurace Claude Code pro vyvojove tymy. Vybrane z [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) — zamerene na to, co skutecne pomaha.
+Přenositelná konfigurace Claude Code pro vývojové týmy. Vybrané z [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) — zaměřené na to, co skutečně pomáhá.
 
-## Rychla instalace
+## Rychlá instalace
 
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
 ```
 
-## Tri prikazy, ktere meni vysledek
+## Tři příkazy, které mění výsledek
 
 ```
-/plan "co chces udelat"     # Planuj pred kodovanim
-/code-review                # Zkontroluj po kodovani
-/verify                     # Spust vsechny kontroly pred commitem
+/plan "co chceš udělat"     # Naplánuj před kódováním
+/code-review                # Zkontroluj po dokončení
+/verify                     # Spusť všechny kontroly před commitem
 ```
 
-Mezi nesouvisejicimi ukoly: `/compact` (uvolni kontext, setri tokeny).
+Mezi nesouvisejícími úkoly: `/compact` (uvolní kontext, šetří tokeny).
 
-## Moznosti instalace
+## Možnosti instalace
 
 ```bash
-bash setup.sh                              # Zakladni: pravidla + agenti + prikazy
-bash setup.sh --full                       # Vse: + skills, hooks, MCP
-bash setup.sh --with-hooks                 # Zakladni + hooks
-bash setup.sh --project eshop              # Zakladni + CLAUDE.md sablona
+bash setup.sh                              # Základ: pravidla + agenti + příkazy
+bash setup.sh --full                       # Vše: + skills, hooks, MCP
+bash setup.sh --with-hooks                 # Základ + hooks
+bash setup.sh --project eshop              # Základ + CLAUDE.md šablona
 ```
 
-Typy projektu: `real-estate`, `song-gift`, `eshop`, `defi`
+Typy projektů: `real-estate`, `song-gift`, `eshop`, `defi`
 
 Po instalaci restartuj Claude Code.
+
+## Dokumentace
+
+- [Cheatsheet pro pokročilé](docs/cheatsheet-advanced.md) — kompletní reference všech příkazů, pravidel, agentů
+- [Průvodce pro začátečníky](docs/cheatsheet-beginner.md) — jak psát dobré prompty, šetřit tokeny, vyhnout se chybám
+
+**Pro začátečníky:** Otevřete `CLAUDE.md` ve svém projektu a odkomentujte blok "BEGINNER" v sekci "User Context". Claude pak bude věci vysvětlovat srozumitelněji.
+
+## Bezpečnost: existující složka ~/.claude
+
+Instalátor **pouze přidává** soubory do `rules/`, `agents/` a `commands/`. Nesmaže vaše sessions, projekty, paměť ani MCP konfigurace. `settings.json` se před změnou zálohuje.

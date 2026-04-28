@@ -88,6 +88,14 @@ if [ -f "$CLAUDE_DIR/settings.json" ]; then
   echo "Backed up existing settings.json to $BACKUP"
 fi
 
+# === SAFETY CHECK ===
+# The installer only writes to rules/, agents/, commands/, skills/, hooks/.
+# It does NOT touch: sessions/, projects/, memory/, plans/, mcp-configs/, .agents/
+if [ -d "$CLAUDE_DIR/rules/common" ]; then
+  echo "NOTE: Existing rules/agents/commands with the same names will be overwritten."
+  echo "  Your sessions, projects, memory, and MCP configs are safe."
+fi
+
 # === CORE INSTALL ===
 echo "Installing core configuration..."
 mkdir -p "$CLAUDE_DIR/rules" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands"

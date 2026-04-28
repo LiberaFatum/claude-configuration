@@ -87,6 +87,37 @@ A feature is done when **all** of the following are true:
 - Do not write `print()` / `console.log()` for logging — use the configured logger.
 - Do not commit `.env`, `*.db`, `__pycache__/`, `node_modules/`, or anything in `.gitignore`.
 
+## User Context
+
+<!-- Uncomment ONE of the following blocks based on your experience level. -->
+<!-- This helps Claude adjust its communication style. -->
+
+<!-- BEGINNER (uncomment if you're learning to code): -->
+<!--
+I am learning to program. When working on this project:
+- Explain what you changed and why in simple terms.
+- If you encounter an error, explain what went wrong before trying to fix it.
+- If something is too complex, suggest a simpler approach first.
+- Do not add features I did not ask for.
+- When in doubt about what I want, ask me rather than guessing.
+-->
+
+<!-- INTERMEDIATE (uncomment if you can code but are new to this stack): -->
+<!--
+I can program but I'm new to this project's tech stack.
+- Explain stack-specific patterns when you use them for the first time.
+- Don't over-explain basic programming concepts.
+- When in doubt about what I want, ask me rather than guessing.
+-->
+
+<!-- ADVANCED (uncomment if you're experienced): -->
+<!--
+I am an experienced developer. Be concise:
+- Summarize what changed in 2-3 sentences. Do not narrate the process.
+- If a request is ambiguous, ask one clarifying question rather than guessing.
+- If you encounter a problem you cannot solve in 3 attempts, stop and explain what you tried.
+-->
+
 ## Communication Preferences
 
 - When you finish a task, summarize what changed in 2-3 sentences. Do not narrate the process.
