@@ -293,3 +293,234 @@ BUILD BROKEN:     /build-fix
 ```
 
 When in doubt: describe what you want as specifically as possible, and let Claude figure out the implementation.
+
+---
+
+# Pruvodce pro zacatecniky (CZ)
+
+Tento pruvodce je pro lidi, kteri jsou novi v programovani nebo v Claude Code. Nauci vas efektivne pracovat s Claudem a neutraci zbytecne za tokeny.
+
+---
+
+## Co je Claude Code?
+
+Claude Code je AI programator, ktery zije ve vasem terminalu. Popisete, co chcete, a on napise kod za vas. Ale jako kazdy nastroj — kvalita vysledku zalezi na tom, jak ho pouzivate.
+
+Tato konfigurace zpusobi, ze Claude:
+- Planuje pred kodovanim (mene chyb)
+- Pise testy pred kodem (odchyti bugy vcas)
+- Kontroluje svuj vlastni kod (odchyti problemy pred ulozenm)
+- Zastavi se a zepta se, kdyz si neni jisty (zadne tiche spatne odbocky)
+
+---
+
+## Tri zlata pravidla
+
+### 1. Vzdy nejdriv naplanuj
+
+Pred tim, nez Clauda pozadas o cokoliv, napis:
+
+```
+/plan "co chces vytvorit"
+```
+
+Claude vytvori plan krok za krokem a ukaze ti ho. Precti si ho. Pokud zni spravne, rekni "pokracuj." Pokud ne, rekni co je spatne.
+
+**Proc na tom zalezi:** Bez planu muze Claude postavit spatnou vec. Opravit spatnou implementaci stoji 10x vic tokenu nez opravit spatny plan.
+
+### 2. Zkontroluj pred ulozenm
+
+Pote co Claude dopise kod, napis:
+
+```
+/code-review
+```
+
+Toto zkontroluje bugy, bezpecnostni problemy a kvalitu kodu. Berte to jako druhy par oci.
+
+### 3. Vycisti kontext mezi ukoly
+
+Kdyz dokoncis jeden ukol a chces zacit jiny, napis:
+
+```
+/compact
+```
+
+Toto uvolni Claudovu pamet, aby se mohl soustredil na novy ukol. Bez toho Claude nosi stary kontext, coz ho dela pomalejsim, drazsi a vice zmatenym.
+
+---
+
+## Jak psat dobre prompty
+
+Vas prompt je nejdulezitejsi faktor pro ziskani dobrych vysledku.
+
+### Spatne prompty (mrha tokeny, spatne vysledky)
+
+```
+udelej web
+```
+
+```
+oprav to
+```
+
+Toto je prilis vague. Claude musi hadat co chcete, a uhadne spatne.
+
+### Dobre prompty (usetri tokeny, spravne vysledky)
+
+```
+Vytvor React komponentu ProductList, ktera:
+- Bere pole produktu (nazev, cena, image_url)
+- Zobrazuje je v responsivni mrizce (3 sloupce na desktopu, 1 na mobilu)
+- Kazda karta produktu ma nazev, cenu v CZK a obrazek
+- Kliknuti na kartu otevre detail na /product/[id]
+```
+
+**Vzorec:** Reknete Claudovi CO chcete, KDE to ma byt a JAK to ma fungovat.
+
+---
+
+## Vase prvni nastaveni projektu
+
+### Krok 1: Nainstaluj konfiguraci
+
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
+```
+
+Restartuj Claude Code po instalaci.
+
+### Krok 2: Zaloz novy projekt
+
+```bash
+mkdir muj-projekt
+cd muj-projekt
+```
+
+Pak v Claude Code:
+
+```
+/init eshop
+```
+
+Toto vytvori soubor CLAUDE.md se spravnym nastavenim pro tvuj typ projektu.
+
+### Krok 3: Otevri CLAUDE.md
+
+Soubor CLAUDE.md rika Claudovi o tvem projektu. Otevri ho a vyplni `[TODO]` sekce. Pokud si nejsi jisty, staci popsat co projekt dela ve 2-3 vetach.
+
+### Krok 4: Nastav svoji uroven
+
+V Claude Code napis:
+
+```
+/switch-tier beginner
+```
+
+Toto nastavi Clauda aby mluvil jednoduse a ptal se pred kazdou akci.
+
+### Krok 5: Zacni stavet
+
+```
+/plan "vytvor stranku se seznamem produktu z databaze"
+```
+
+Precti plan. Pokud vypada dobre, rekni "pokracuj."
+
+---
+
+## Prehled prikazu
+
+Nemusis si vsechny pamatovat. Zacni s temito tremi:
+
+| Prikaz | Kdy ho pouzit | Co dela |
+|--------|---------------|---------|
+| `/plan` | Pred stavenim cehokoliv | Vytvori plan ke schvaleni |
+| `/code-review` | Po napsani kodu | Zkontroluje bugy a problemy |
+| `/verify` | Pred ulozenm kodu | Spusti vsechny testy a kontroly |
+
+Az budes pohodlnejsi, pridej tyto:
+
+| Prikaz | Kdy ho pouzit | Co dela |
+|--------|---------------|---------|
+| `/tdd` | Pri staveni nove funkce | Napise nejdriv testy, pak kod |
+| `/build-fix` | Kdyz se kod neskompiluje | Opravi chyby buildu |
+| `/compact` | Mezi ruznymi ukoly | Uvolni kontext, setri tokeny |
+| `/init` | Zakladani noveho projektu | Vytvori konfiguracni soubory |
+| `/switch-tier` | Zmena urovne obtiznosti | Prepne beginner/intermediate/advanced |
+
+---
+
+## Jak setrit tokeny
+
+Tokeny = jednotky, za ktere Claude uctuje. Vic tokenu = drazsi. Tak minimalizujte plytvas:
+
+### 1. Bud konkretni (usetri 30-50%)
+
+Pokazde kdyz Claude uhadne spatne a musi predela, platite za oba pokusy.
+
+### 2. Pouzivej /plan (usetri 30-60%)
+
+Spatna implementace stoji 5000-20000 tokenu na opravu. Spatny plan stoji 500 tokenu na opravu.
+
+### 3. Pouzivej /compact (usetri 10-20%)
+
+Stary kontext zdrazuje kazdy prompt. Vycisti ho mezi ukoly.
+
+### 4. Nebojuj s chybovymi smyckami
+
+Pokud Claude zkusi opravit stejnou chybu 3x a selze, zastavi se. To je zamerne.
+
+Kdyz se to stane:
+- Precti si chybovou zpravu sam
+- Vygoogluj ji pokud je treba
+- Rekni Claudovi konkretne, co si myslis ze je problem
+
+### 5. Jeden ukol najednou
+
+Nerikej "oprav login bug a taky pridej vyhledavani a taky aktualizuj navbar." Kazdy ukol zvlast, nebo aspon oddelen `/compact`.
+
+---
+
+## Casete chyby, kterym se vyhnout
+
+### Chyba: Rikat "ano" na vsechno co Claude navrhe
+
+Nekdy Claude navrhe pridani extra funkci nebo "vylepseni" veci, o ktere jste nezadali. To stoji tokeny a pridava bugy.
+
+**Reseni:** Reknete "ne, udelej jen to o co jsem te zadal."
+
+### Chyba: Necist chybove zpravy
+
+Kdyz neco selze, prectete si co Claude rika o chybe nez mu reknete "oprav to." Pokud jen reknete "oprav to," Claude bude hadat.
+
+**Reseni:** Prectete chybu, pak reknete Claudovi co si myslite ze je spatne.
+
+### Chyba: Zadat Claudovi prilis mnoho najednou
+
+"Postav mi cely e-shop" vytvori neporadek, ktery se tezko ladl. Claude pracuje nejlepe na soustredenych, dobre definovanych ukolech.
+
+**Reseni:** Rozdelit na kousky: "Vytvor model produktu," pak "Vytvor stranku se seznamem produktu," pak "Pridej nakupni kosik."
+
+### Chyba: Nepouzivat /compact
+
+Po 30+ zpravach je Clauduv kontext nafouknty. Odpovedi jsou pomalejsi, drazsi a mene presne.
+
+**Reseni:** `/compact` po dokonceni kazdeho ukolu.
+
+---
+
+## Rychly prehled
+
+```
+PRED KODOVANIM:   /plan "co chces stavet"
+BEHEM KODOVANI:   Nech Clauda pracovat — pouziva /tdd a agenty automaticky
+PO KODOVANI:      /code-review
+PRED ULOZENM:     /verify
+MEZI UKOLY:       /compact
+NOVY PROJEKT:     /init <typ>
+BUILD NEFUNGUJE:  /build-fix
+ZMENA UROVNE:     /switch-tier beginner
+```
+
+Pokud si nejsi jisty: popis co chces co nejkonkretneji a nech Clauda at vymysli implementaci.

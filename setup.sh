@@ -223,6 +223,13 @@ if [ -n "$PROJECT_TYPE" ]; then
     cp "$WORK_DIR/templates/$TEMPLATE_FILE" "./CLAUDE.md"
     echo "  Created CLAUDE.md from $PROJECT_TYPE template"
   fi
+else
+  # No --project flag: copy base template if no CLAUDE.md exists
+  if [ ! -f "CLAUDE.md" ]; then
+    cp "$WORK_DIR/templates/CLAUDE.md" "./CLAUDE.md"
+    echo "  Created CLAUDE.md from base template (beginner mode by default)"
+    echo "  Use /switch-tier in Claude Code to change your skill level"
+  fi
 fi
 
 # === SUMMARY ===
@@ -246,3 +253,4 @@ echo "  /plan \"what you want to build\"    # Plan before coding"
 echo "  /tdd                               # Test-driven development"
 echo "  /code-review                       # Review your code"
 echo "  /verify                            # Run all checks"
+echo "  /switch-tier beginner              # Switch skill level"

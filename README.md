@@ -10,7 +10,7 @@ Portable Claude Code configuration for development teams. Curated from [Everythi
 |-----------|-------|-------------|
 | **Rules** | 18 (+3 optional Solidity) | Auto-loaded coding standards (Python, TypeScript, Web) |
 | **Agents** | 9 | Specialist reviewers Claude invokes automatically |
-| **Commands** | 8 | Slash commands you type in chat |
+| **Commands** | 9 | Slash commands you type in chat |
 | **Skills** | 2 | On-demand knowledge (PostgreSQL, frontend patterns) |
 | **Templates** | 5 | Project-level CLAUDE.md for 4 project types + base |
 | **Hooks** | 3 | Bash scripts that catch common mistakes (opt-in) |
@@ -66,6 +66,7 @@ Between unrelated tasks: `/compact` (frees context, saves tokens).
 | `/verify` | Run build + lint + typecheck + tests |
 | `/test-coverage` | Check test coverage |
 | `/refactor-clean` | Remove dead code |
+| `/switch-tier` | Switch skill level in CLAUDE.md (beginner/intermediate/advanced) |
 | `/init` | Set up a new project with CLAUDE.md template |
 
 ## Agents (Auto-Invoked)
@@ -134,7 +135,13 @@ Or use the base template and fill in the `[TODO]` sections.
 | [Advanced Cheatsheet](docs/cheatsheet-advanced.md) | Experienced developers | Full reference for every command, rule, agent, skill. Optimal workflow. Token savings analysis. |
 | [Beginner's Guide](docs/cheatsheet-beginner.md) | New programmers | How to write good prompts, save tokens, avoid common mistakes. Step-by-step with examples. |
 
-**For beginners:** Open `CLAUDE.md` in your project and uncomment the "BEGINNER" block in the "User Context" section. This tells Claude to explain things more clearly and suggest simpler approaches.
+**For beginners:** All CLAUDE.md templates default to BEGINNER mode. To switch, type `/switch-tier` in Claude Code. Each tier controls how Claude communicates and how strictly it enforces workflow rules.
+
+| Level | For whom | Behavior |
+|-------|----------|----------|
+| **BEGINNER** | Non-programmers | Plain language, asks before every action, no TDD, no agents |
+| **INTERMEDIATE** | Some experience | Concise but clear, moderate autonomy, tests alongside code |
+| **ADVANCED** | Experienced devs | Terse, fully autonomous, mandatory TDD + code review + agents |
 
 ## Safety: Existing ~/.claude Folder
 
@@ -212,8 +219,19 @@ Po instalaci restartuj Claude Code.
 - [Cheatsheet pro pokročilé](docs/cheatsheet-advanced.md) — kompletní reference všech příkazů, pravidel, agentů
 - [Průvodce pro začátečníky](docs/cheatsheet-beginner.md) — jak psát dobré prompty, šetřit tokeny, vyhnout se chybám
 
-**Pro začátečníky:** Otevřete `CLAUDE.md` ve svém projektu a odkomentujte blok "BEGINNER" v sekci "User Context". Claude pak bude věci vysvětlovat srozumitelněji.
+**Pro zacatecniky:** Vsechny CLAUDE.md sablony jsou ve vychozim nastaveni v BEGINNER modu. Pro prepnuti napis `/switch-tier` v Claude Code.
 
-## Bezpečnost: existující složka ~/.claude
+| Uroven | Pro koho | Chovani |
+|--------|----------|---------|
+| **BEGINNER** | Neprogramatory | Jednoduchy jazyk, pta se pred akci, zadne TDD, zadni agenti |
+| **INTERMEDIATE** | Mirne pokrocile | Strucny ale srozumitelny, testy spolu s kodem |
+| **ADVANCED** | Zkusene vyvojare | Maximalne strucny, plne autonomni, povinne TDD + code review |
 
-Instalátor **pouze přidává** soubory do `rules/`, `agents/` a `commands/`. Nesmaže vaše sessions, projekty, paměť ani MCP konfigurace. `settings.json` se před změnou zálohuje.
+## Dokumentace
+
+- [Cheatsheet pro pokrocile](docs/cheatsheet-advanced.md) — kompletni reference (EN + CZ)
+- [Pruvodce pro zacatecniky](docs/cheatsheet-beginner.md) — jak psat prompty, setrit tokeny (EN + CZ)
+
+## Bezpecnost: existujici slozka ~/.claude
+
+Instalator **pouze pridava** soubory do `rules/`, `agents/` a `commands/`. Nesmaze vase sessions, projekty, pamet ani MCP konfigurace. `settings.json` se pred zmenou zalohuje.

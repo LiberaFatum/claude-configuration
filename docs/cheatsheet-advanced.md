@@ -270,3 +270,146 @@ After a session, check `/usage` to see how many tokens were consumed. If it's hi
 - Were there fix loops? (Budget Guard should prevent this)
 - Did you switch topics without `/compact`?
 - Did you provide enough context in the initial prompt?
+
+---
+
+# Cheatsheet pro pokrocile (CZ)
+
+Kompletni reference pro maximalni vyuziti teto konfigurace.
+
+---
+
+## Optimalni workflow
+
+```
+1. /plan "popis funkce"              →  Claude vytvori plan, ty schvalis
+2. /tdd                              →  Nejdriv testy, pak implementace
+3. /code-review                      →  Odchyti bugy pred commitem
+4. /verify                           →  Build + lint + typecheck + testy
+5. git commit                        →  Conventional commit format
+```
+
+Mezi nesouvisejicimi ukoly: `/compact` pro uvolneni kontextu a usetreni tokenu.
+
+---
+
+## Prehled vsech prikazu
+
+| Prikaz | Kdy pouzit | Co dela |
+|--------|------------|---------|
+| `/plan` | Pred jakymkoliv netrivialnim ukolem | Vytvori plan krok za krokem, ceka na schvaleni |
+| `/tdd` | Pri implementaci nove logiky | RED-GREEN-REFACTOR cyklus |
+| `/code-review` | Po napsani/uprave kodu, pred commitem | Kontrola bezpecnosti, kvality, bugu |
+| `/verify` | Pred commitem, po /code-review | Spusti build + lint + typecheck + testy |
+| `/build-fix` | Kdyz build selze | Minimalni zmeny pro opravu buildu |
+| `/test-coverage` | Po napsani testu | Overi 80%+ pokryti |
+| `/refactor-clean` | Po dokonceni funkce | Najde a odstrani mrtvy kod |
+| `/init` | Zakladani noveho projektu | Vytvori CLAUDE.md, .gitignore, .env.example |
+| `/switch-tier` | Zmena urovne | Prepne beginner/intermediate/advanced v CLAUDE.md |
+
+---
+
+## Reference pravidel
+
+Pravidla se nacitaji automaticky pri kazdem promptu. Nemusite je vyvolavat — formovaji chovani Clauda.
+
+### Spolecna pravidla (vsechny projekty)
+
+| Pravidlo | Co dela |
+|----------|---------|
+| `coding-style` | Immutabilita, KISS, DRY, YAGNI, limity velikosti souboru (<400 radku), limity funkci (<50 radku) |
+| `security` | Nikdy necommitovat tajemstvi, validovat vstup, parametrizovane dotazy, rate limiting |
+| `testing` | 80% pokryti minimum, TDD workflow, AAA vzor |
+| `git-workflow` | Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:` |
+| `development-workflow` | Research-Plan-TDD-Review-Commit pipeline |
+| `code-review` | Review checklist, urovne zavaznosti, bezpecnostni triggery |
+
+### Jazykove specificka pravidla
+
+| Jazyk | Pravidla | Kdy se nacitaji |
+|-------|----------|-----------------|
+| Python | coding-style, security, testing, patterns | `.py` soubory |
+| TypeScript | coding-style, security, patterns | `.ts`/`.tsx`/`.js`/`.jsx` soubory |
+| Web | coding-style, security, performance, design-quality, patterns | Frontendova prace |
+| Solidity | coding-style, security, testing | `.sol` soubory (opt-in) |
+
+---
+
+## Reference agentu
+
+Agenti jsou specialistni sub-modely, ktere Claude vyvolava automaticky.
+
+| Agent | Model | Automaticky se spusti kdyz... |
+|-------|-------|-------------------------------|
+| `planner` | Opus | Komplexni pozadavek nebo `/plan` |
+| `code-reviewer` | Sonnet | `/code-review` nebo pochybna kvalita kodu |
+| `tdd-guide` | Sonnet | `/tdd` nebo psani testu |
+| `build-error-resolver` | Sonnet | Build selze |
+| `security-reviewer` | Sonnet | Kod se dotyka auth, plateb, uzivatelskeych dat |
+| `python-reviewer` | Sonnet | Python code review |
+| `typescript-reviewer` | Sonnet | TypeScript/JS code review |
+| `database-reviewer` | Sonnet | SQL, migrace, zmeny schematu |
+| `refactor-cleaner` | Sonnet | `/refactor-clean` |
+
+**Dopad na tokeny:** Agenti se nacitaji on-demand. Stoji tokeny jen kdyz jsou vyvolani, ne pri kazdem promptu.
+
+---
+
+## Pruvodce usporou tokenu
+
+### Co stoji tokeny
+
+| Komponenta | Tokeny/prompt | Kdy |
+|------------|---------------|-----|
+| Pravidla (vsechna nactena) | ~1400 | Kazdy prompt |
+| CLAUDE.md | ~300-500 | Kazdy prompt |
+| Vyvolani agenta | ~300-1100 | On-demand |
+| Aktivace skillu | ~200-800 | On-demand |
+
+### Jak minimalizovat plytvan
+
+1. **Vzdy nejdriv /plan** — Spatny plan stoji ~500 tokenu na opravu. Spatna implementace 5000-20000.
+2. **Pouzivat /compact mezi ukoly** — Cisty kontext = levnejsi, rychlejsi, presnejsi odpovedi.
+3. **Byt konkretni v promptech** — "Pridej auth" → Claude hada. "Pridej JWT auth s refresh tokeny pomoci vzoru z auth/ modulu" → Claude trafi naprvic.
+4. **Nenechat Clauda opravovat vlastni bugy v smycce** — Pokud selze 3x, Budget Guard ho zastavi. Prectete chybu sami.
+5. **Jeden ukol na session** — Nemichejte "oprav login bug" s "taky pridej novou funkci."
+6. **Spravny model** — Opus pro planovani a architekturu, Sonnet pro rutinni kodovani. Prepnuti: `/model`.
+
+### Odhadovane uspory z teto konfigurace
+
+| Scenar | Bez konfigurace | S konfiguraci | Uspora |
+|--------|-----------------|---------------|--------|
+| Jednoduchy bug fix | ~15K tokenu | ~10K tokenu | ~33% |
+| Stredne velka funkce | ~80K tokenu | ~45K tokenu | ~44% |
+| Funkce s bugy | ~150K tokenu | ~60K tokenu | ~60% |
+| Spatny smer implementace | ~50K tokenu | ~2K (plan to chyti) | ~96% |
+
+---
+
+## Pokrocile tipy
+
+### Vlastni pravidla pro konkretni projekt
+
+Pridejte lokalni pravidla v `<projekt>/.claude/rules/`:
+
+```bash
+mkdir -p .claude/rules
+echo "Vzdy pouzivej snake_case pro nazvy databazovych sloupcu." > .claude/rules/database.md
+```
+
+Tato se nacitaji jen pro dany projekt.
+
+### Paralelni review
+
+Pri praci na velkem PR pozadejte Clauda o paralelni kontrolu:
+
+```
+Zkontroluj tento PR — spust security-reviewer a code-reviewer agenty paralelne.
+```
+
+### Ladeni spotreby tokenu
+
+Po session zkontrolujte `/usage`. Pokud je vyssi nez ocekavane:
+- Byly tam opravne smycky? (Budget Guard by mel zabranit)
+- Zmenili jste tema bez `/compact`?
+- Dali jste dostatek kontextu v pocatecnim promptu?

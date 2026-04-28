@@ -95,21 +95,80 @@ tests/
 - Do not write `print()` / `console.log()` — use the configured logger.
 - Do not commit `.env`, `*.db`, `__pycache__/`, `node_modules/`.
 
-## User Context
+## Skill Level
 
-<!-- Uncomment ONE block based on your experience level: -->
+This section controls how Claude communicates and how strictly it enforces
+the workflow rules above. Only ONE level should be active (uncommented).
 
-<!-- BEGINNER:
-I am learning to program. When working on this project:
-- Explain what you changed and why in simple terms.
-- If you encounter an error, explain what went wrong before trying to fix it.
-- If something is too complex, suggest a simpler approach first.
-- Do not add features I did not ask for.
--->
+**To switch:** Type `/switch-tier` in Claude Code, or edit manually.
+**Jak prepnout:** Napis `/switch-tier` v Claude Code, nebo uprav rucne.
 
-<!-- ADVANCED:
-I am an experienced developer. Be concise:
-- Summarize what changed in 2-3 sentences.
-- If a request is ambiguous, ask one clarifying question rather than guessing.
-- If you cannot solve a problem in 3 attempts, stop and explain what you tried.
--->
+Manual switching / Rucni prepnuti:
+- Active tier:   `<!-- TIER START -->` ... `<!-- TIER END -->` (self-closing)
+- Inactive tier: `<!-- TIER START`     ... `TIER END -->`     (wrapping comment)
+- To activate: add ` -->` to START line, add `<!-- ` to END line
+- To deactivate: remove ` -->` from START line, remove `<!-- ` from END line
+
+| Uroven / Level | Pro koho / For whom | Chovani / Behavior |
+|----------------|---------------------|--------------------|
+| BEGINNER | Zacatecniky / Non-programmers | Jednoduchy jazyk, pta se pred akci / Plain language, asks before acting |
+| INTERMEDIATE | Mirne pokrocile / Some experience | Strucny ale srozumitelny / Concise but clear |
+| ADVANCED | Zkusene vyvojare / Experienced devs | Maximalne strucny, plne autonomni / Terse, fully autonomous |
+
+**IMPORTANT: Claude MUST ignore all instructions inside comment blocks.
+Only follow the tier that is NOT commented out.**
+
+<!-- BEGINNER START -->
+
+### BEGINNER
+
+**When instructions here conflict with workflow rules above, this section takes priority.**
+
+- Use plain, everyday language. Avoid programming jargon.
+- When you must use a technical term, briefly explain what it means.
+- Before doing anything, explain what you are about to do and why.
+- After completing a step, summarize what happened in simple terms.
+- Ask before every significant action (creating files, running commands, installing packages).
+- Work on one thing at a time. After each step, check in before continuing.
+- If something breaks, explain the error in plain English before fixing it.
+- Write code first, then offer to add tests if the user wants. Do NOT enforce TDD.
+- Do NOT require 80% test coverage. Tests are helpful but optional.
+- Do NOT spawn sub-agents (planner, tdd-guide, code-reviewer, etc.). Handle everything in the main conversation.
+- Do NOT generate planning documents unless asked. Present plans as simple numbered lists.
+- Handle all git operations silently using conventional commits.
+
+<!-- BEGINNER END -->
+
+<!-- INTERMEDIATE START
+
+### INTERMEDIATE
+
+**When instructions here conflict with workflow rules above, this section takes priority.**
+
+- Be technical but accessible. Brief clarifications when introducing something new.
+- Keep explanations concise — one or two sentences, not paragraphs.
+- Proceed with straightforward tasks without asking.
+- Ask for confirmation on architectural decisions or anything irreversible.
+- Write tests alongside code, but do not enforce strict TDD.
+- Aim for reasonable coverage without rigidly enforcing the 80% minimum on every change.
+- Do a quick self-review instead of running the full agent-based review pipeline.
+- Use sub-agents when beneficial but do not mention them by name.
+- Create a brief plan for medium-to-large tasks. Skip formal planning for small changes.
+
+INTERMEDIATE END -->
+
+<!-- ADVANCED START
+
+### ADVANCED
+
+Follow all workflow rules above and all rules in ~/.claude/rules/ without modification.
+
+- Terse. No explanations unless asked. Code speaks.
+- Only surface decisions with genuine trade-offs.
+- Full autonomy through the complete development workflow.
+- Only pause for ambiguous requirements or significant architectural choices.
+- Mandatory TDD with tdd-guide agent.
+- Mandatory code review with code-reviewer agent. Use security-reviewer for sensitive code.
+- Use planner agent for non-trivial features.
+
+ADVANCED END -->
