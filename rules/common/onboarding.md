@@ -9,7 +9,10 @@ Before doing anything else, greet the user and offer to set up the project:
 
 1. Briefly explain that `CLAUDE.md` controls how Claude behaves in this project
    (skill level, workflow rules, project context).
-2. Offer to create one by running `/init` (or `/init <type>` for a specific template).
+2. Offer to create one now. The base template is at `~/.claude/templates/CLAUDE.md`.
+   If the user agrees, read that template and write it to `./CLAUDE.md`.
+   If the template file does not exist, tell the user to run the setup script first:
+   `bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)`
 3. After creating it, ask the user to pick their skill level:
    - **BEGINNER** — plain language, asks before every action, no TDD
    - **INTERMEDIATE** — concise but clear, moderate autonomy, tests alongside code

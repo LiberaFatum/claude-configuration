@@ -17,40 +17,54 @@ Set up a new project directory with the right configuration files for Claude Cod
 - Verify we are in a project directory (not home or system dir).
 - Check if CLAUDE.md already exists — if so, ask before overwriting.
 
-### 2. Select template
+### 2. Select and copy template
 
-Based on the argument, use the matching template:
+Templates are installed at `~/.claude/templates/`. Pick the right one:
 
-| Argument | Template | Stack |
-|----------|----------|-------|
-| `real-estate` | Python/FastAPI + React/TS, PostgreSQL, web scraping | Backend-heavy |
-| `song-gift` | React/Next.js, TypeScript, external API integration | Frontend-heavy |
-| `eshop` | Full-stack (Python or Next.js), PostgreSQL, Stripe | Full-stack |
-| `defi` | Solidity, Foundry/Hardhat, React/TS, Web3 | Smart contracts + frontend |
-| _(empty)_ | Base template with fill-in-the-blank sections | Generic |
+| Argument | Template file | Stack |
+|----------|---------------|-------|
+| `real-estate` | `~/.claude/templates/CLAUDE-real-estate.md` | Python/FastAPI + React/TS, PostgreSQL, web scraping |
+| `song-gift` | `~/.claude/templates/CLAUDE-song-gift.md` | React/Next.js, TypeScript, external API integration |
+| `eshop` | `~/.claude/templates/CLAUDE-eshop.md` | Full-stack (Python or Next.js), PostgreSQL, Stripe |
+| `defi` | `~/.claude/templates/CLAUDE-defi.md` | Solidity, Foundry/Hardhat, React/TS, Web3 |
+| _(empty)_ | `~/.claude/templates/CLAUDE.md` | Generic base template |
 
-### 3. Create files
+Read the template file and write it to `./CLAUDE.md` in the current directory.
+Replace the project name placeholder with the current directory name.
 
-Create these files in the current project directory:
+If the template file does not exist, tell the user to re-run the setup script:
+```
+bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
+```
 
-1. **CLAUDE.md** — from the selected template. Fill in the project name based on the directory name.
-2. **.gitignore** — comprehensive gitignore covering the relevant stack (Python + Node + Solidity as needed).
-3. **.env.example** — list expected environment variables with placeholder values and comments.
+### 3. Create supporting files
+
+1. **.gitignore** — comprehensive gitignore covering the relevant stack (Python + Node + Solidity as needed).
+2. **.env.example** — list expected environment variables with placeholder values and comments.
 
 ### 4. Initialize git
 
 If no `.git` directory exists, ask the user if they want to run `git init`.
 
-### 5. Report
+### 5. Offer tier selection
+
+After creating CLAUDE.md, ask the user to pick their skill level:
+- **BEGINNER** — plain language, asks before every action, no TDD
+- **INTERMEDIATE** — concise but clear, moderate autonomy, tests alongside code
+- **ADVANCED** — terse, fully autonomous, mandatory TDD + code review
+
+Then run `/switch-tier` with their choice.
+
+### 6. Report
 
 ```
 Project initialized
 ────────────────────
-Created:  CLAUDE.md (eshop template)
+Created:  CLAUDE.md (base template)
 Created:  .gitignore
 Created:  .env.example
+Tier:     BEGINNER (use /switch-tier to change)
 ────────────────────
-Next: Open CLAUDE.md and fill in the [TODO] sections.
 ```
 
 ## Rules

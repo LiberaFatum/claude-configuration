@@ -98,7 +98,7 @@ fi
 
 # === CORE INSTALL ===
 echo "Installing core configuration..."
-mkdir -p "$CLAUDE_DIR/rules" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands"
+mkdir -p "$CLAUDE_DIR/rules" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/templates"
 
 # Rules (common + python + typescript + web)
 cp -r "$WORK_DIR/rules/common"     "$CLAUDE_DIR/rules/"
@@ -117,6 +117,9 @@ cp "$WORK_DIR/agents/"*.md "$CLAUDE_DIR/agents/"
 
 # Commands
 cp "$WORK_DIR/commands/"*.md "$CLAUDE_DIR/commands/"
+
+# Templates (so /init and onboarding can find them in any project)
+cp "$WORK_DIR/templates/"*.md "$CLAUDE_DIR/templates/"
 
 # === MERGE PERMISSIONS ===
 echo "Setting up default permissions..."
@@ -238,9 +241,10 @@ fi
 echo ""
 echo "Done."
 echo ""
-echo "  Rules:    $(find "$CLAUDE_DIR/rules" -name '*.md' 2>/dev/null | wc -l) files"
-echo "  Agents:   $(ls "$CLAUDE_DIR/agents/"*.md 2>/dev/null | wc -l) files"
-echo "  Commands: $(ls "$CLAUDE_DIR/commands/"*.md 2>/dev/null | wc -l) files"
+echo "  Rules:     $(find "$CLAUDE_DIR/rules" -name '*.md' 2>/dev/null | wc -l) files"
+echo "  Agents:    $(ls "$CLAUDE_DIR/agents/"*.md 2>/dev/null | wc -l) files"
+echo "  Commands:  $(ls "$CLAUDE_DIR/commands/"*.md 2>/dev/null | wc -l) files"
+echo "  Templates: $(ls "$CLAUDE_DIR/templates/"*.md 2>/dev/null | wc -l) files"
 if [ "$FULL" = true ]; then
   echo "  Skills:   $(find "$CLAUDE_DIR/skills" -name 'SKILL.md' 2>/dev/null | wc -l) files"
 fi
