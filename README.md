@@ -18,18 +18,26 @@ Portable Claude Code configuration for development teams. Curated from [Everythi
 
 ## Quick Install
 
+**Step 1 — Install global config** (once per machine):
+
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
 ```
 
-Or inspect first:
+This installs rules, agents, and commands into `~/.claude/`. Restart Claude Code after.
+
+**Step 2 — Open any project and start Claude Code:**
 
 ```bash
-git clone https://github.com/LiberaFatum/claude-configuration.git
-cd claude-configuration
-less setup.sh
-bash setup.sh
+cd my-project
+claude
 ```
+
+Claude will automatically detect that the project has no `CLAUDE.md` and offer to
+create one. It will ask you to pick your skill level (beginner / intermediate / advanced).
+That's the full onboarding — no extra steps needed.
+
+> **Or set up manually:** run `/init` to create `CLAUDE.md`, then `/switch-tier` to pick your level.
 
 ### Install Options
 
@@ -42,8 +50,6 @@ bash setup.sh --project defi                # Standard + CLAUDE.md template for 
 ```
 
 Project types: `real-estate`, `song-gift`, `eshop`, `defi`
-
-Then restart Claude Code.
 
 ## Three Commands That Change Everything
 
@@ -187,9 +193,25 @@ Prenositelna konfigurace Claude Code pro vyvojove tymy. Vybrane z [Everything Cl
 
 ## Rychla instalace
 
+**Krok 1 — Nainstaluj globalni konfiguraci** (jednou na pocitaci):
+
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/LiberaFatum/claude-configuration/main/setup.sh)
 ```
+
+Nainstaluje pravidla, agenty a prikazy do `~/.claude/`. Po instalaci restartuj Claude Code.
+
+**Krok 2 — Otevri libovolny projekt a spust Claude Code:**
+
+```bash
+cd muj-projekt
+claude
+```
+
+Claude automaticky zjisti, ze projekt nema `CLAUDE.md`, a nabidne ho vytvorit.
+Zepta se na uroven dovednosti (beginner / intermediate / advanced). Tim je onboarding hotovy.
+
+> **Nebo rucne:** spust `/init` pro vytvoreni `CLAUDE.md`, pak `/switch-tier` pro vyber urovne.
 
 ## Tri prikazy, ktere meni vysledek
 
@@ -211,8 +233,6 @@ bash setup.sh --project eshop              # Zaklad + CLAUDE.md sablona
 ```
 
 Typy projektu: `real-estate`, `song-gift`, `eshop`, `defi`
-
-Po instalaci restartuj Claude Code.
 
 ## Urovne dovednosti
 
